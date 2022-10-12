@@ -17,7 +17,7 @@ module "origin_pool" {
   f5xc_origin_pool_name                      = format("%s-%s-op-%s", var.project_prefix, var.project_name, var.project_suffix)
   f5xc_origin_pool_port                      = var.origin_port
   f5xc_origin_pool_no_tls                    = true
-  f5xc_origin_pool_origin_servers            = var.origin_servers
+  f5xc_origin_pool_origin_servers            = var.f5xc_origin_pool_origin_servers
   f5xc_origin_pool_healthcheck_names         = module.healthcheck.healthcheck["name"]
   f5xc_origin_pool_endpoint_selection        = "DISTRIBUTED"
   f5xc_origin_pool_loadbalancer_algorithm    = "LB_OVERRIDE"

@@ -76,7 +76,7 @@ module "gcp_compute_firewall_http" {
     }
   ]
   gcp_compute_firewall_target_tags     = ["http"]
-  gcp_compute_firewall_source_ranges   = [var.allow_cidr_blocks]
+  gcp_compute_firewall_source_ranges   = var.allow_cidr_blocks
   gcp_compute_firewall_compute_network = module.gcp_network.vpc_network["name"]
 }
 

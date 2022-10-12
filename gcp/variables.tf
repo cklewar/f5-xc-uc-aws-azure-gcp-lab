@@ -1,5 +1,6 @@
 variable "instance_template_data" {
-  type = string
+  type    = map(string)
+  default = {}
 }
 
 variable "f5xc_gcp_cred" {

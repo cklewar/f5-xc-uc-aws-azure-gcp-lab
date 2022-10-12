@@ -17,7 +17,7 @@ variable "site_name" {
 }
 
 variable "instance_template_data" {
-  type = string
+  type = map(string)
 }
 
 variable "f5xc_azure_cred" {
@@ -67,4 +67,14 @@ variable "custom_tags" {
 
 variable "f5xc_tenant" {
   type = string
+}
+
+variable "azure_instance_script_file_name" {
+  type    = string
+  default = "instance_custom_data.sh"
+}
+
+variable "azure_instance_script_template_file_name" {
+  type    = string
+  default = "instance_custom_data.tftpl"
 }

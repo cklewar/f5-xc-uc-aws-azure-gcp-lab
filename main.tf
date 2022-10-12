@@ -1,10 +1,10 @@
-/*module "namespacae" {
+module "namespace" {
   source              = "./modules/f5xc/namespace"
   f5xc_namespace_name = var.custom_namespace
   providers           = {
     volterra = volterra.default
   }
-}*/
+}
 
 module "virtual_site" {
   source                                = "./modules/f5xc/site/virtual"

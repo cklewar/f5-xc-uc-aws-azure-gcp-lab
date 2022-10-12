@@ -38,9 +38,7 @@ variable "advertise_sites" {
   type = list(string)
 }
 
-variable "origin_servers" {
-  type = map(map(string))
-}
+variable "f5xc_origin_pool_origin_servers" {}
 
 variable "domains" {
   type = list(string)
