@@ -1,5 +1,5 @@
 resource "google_compute_network" "vpc" {
-  name                    =  var.name
+  name                    = var.name
   auto_create_subnetworks = "false"
   routing_mode            = "REGIONAL"
 }
@@ -28,20 +28,20 @@ resource "google_compute_firewall" "allow-http" {
   network = google_compute_network.vpc.name
   allow {
     protocol = "tcp"
-    ports    = ["80","8080"]
+    ports    = ["80", "8080"]
   }
   source_ranges = var.allow_cidr_blocks
-  target_tags = ["http"] 
+  target_tags   = ["http"]
 }
 
 resource "google_compute_route" "vip" {
-  name        = "${var.name}-network-route"
-  dest_range  = var.allow_cidr_blocks[0]
-  network     = google_compute_network.vpc.name
-  next_hop_instance = regex("mwlab-gcp-\\w+-\\w+",module.site.output.tf_output)
+  name                   = "${var.name}-network-route"
+  dest_range             = var.allow_cidr_blocks[0]
+  network                = google_compute_network.vpc.name
+  next_hop_instance      = regex("mwlab-gcp-\\w+-\\w+", module.site.output.tf_output)
   next_hop_instance_zone = var.gcp_az_name
-  priority    = 100
-  depends_on        = [module.site]
+  priority               = 100
+  depends_on             = [module.site]
 }
 
 resource "google_compute_firewall" "allow-ssh" {
@@ -51,40 +51,40 @@ resource "google_compute_firewall" "allow-ssh" {
     protocol = "tcp"
     ports    = ["22"]
   }
-  source_ranges = [ "0.0.0.0/0" ]
-  target_tags = ["ssh"]
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["ssh"]
 }
 
 resource "google_compute_subnetwork" "outside_subnet" {
-  name          =  "${var.name}-outside"
+  name          = "${var.name}-outside"
   ip_cidr_range = var.outside_subnet_cidr_block
   network       = google_compute_network.vpc.self_link
   region        = var.gcp_region
 }
 
 resource "google_compute_subnetwork" "inside_subnet" {
-  name          =  "${var.name}-inside"
+  name          = "${var.name}-inside"
   ip_cidr_range = var.inside_subnet_cidr_block
   network       = google_compute_network.vpc.self_link
   region        = var.gcp_region
 }
 
 resource "google_compute_instance" "workload" {
-  name = var.name
-  machine_type  = "n1-standard-1"
-  zone          = var.gcp_az_name
-  tags          = ["ssh","http"]
+  name         = var.name
+  machine_type = "n1-standard-1"
+  zone         = var.gcp_az_name
+  tags         = ["ssh", "http"]
   boot_disk {
     initialize_params {
-      image     =  "ubuntu-os-cloud/ubuntu-1804-lts"
+      image = "ubuntu-os-cloud/ubuntu-1804-lts"
     }
   }
   labels = {
-    webserver =  "true"     
+    webserver = "true"
   }
-  metadata =  {
+  metadata = {
     startup-script = var.workload_user_data
-    ssh-keys = "ubuntu:${file(var.ssh_public_key_file)}"
+    ssh-keys       = "ubuntu:${file(var.ssh_public_key_file)}"
   }
   network_interface {
     subnetwork = google_compute_subnetwork.inside_subnet.name
@@ -95,7 +95,7 @@ resource "google_compute_instance" "workload" {
 }
 
 module "site" {
-  source                            = "../mymodules/f5xc/site/gcp"
+  source                            = "../modules/f5xc/site/gcp"
   f5xc_namespace                    = "system"
   f5xc_gcp_site_name                = var.name
   f5xc_gcp_ce_gw_type               = "multi_nic"
@@ -115,22 +115,22 @@ module "site" {
 }
 
 module "site_status_check" {
-  source            = "../mymodules/f5xc/status/site"
-  f5xc_namespace    = "system"
-  f5xc_site_name    = var.name
-  f5xc_tenant       = var.f5xc_tenant
-  f5xc_api_url      = var.f5xc_api_url
-  f5xc_api_token    = var.f5xc_api_token
-  depends_on        = [module.site]
+  depends_on     = [module.site]
+  source         = "../modules/f5xc/status/site"
+  f5xc_namespace = "system"
+  f5xc_site_name = var.name
+  f5xc_tenant    = var.f5xc_tenant
+  f5xc_api_url   = var.f5xc_api_url
+  f5xc_api_token = var.f5xc_api_token
 }
 
 output "site" {
-  value = module.site.output.tf_output
+  value = module.site.gcp_vpc
 }
 
 output "workload" {
   value = {
-    "public_ip" = resource.google_compute_instance.workload.network_interface[0].access_config[0].nat_ip 
+    "public_ip"  = resource.google_compute_instance.workload.network_interface[0].access_config[0].nat_ip
     "private_ip" = resource.google_compute_instance.workload.network_interface[0].network_ip
   }
 }

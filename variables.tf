@@ -1,9 +1,36 @@
-variable "f5xc_api_cert" {
-  default = ""
+variable "project_prefix" {
+  type        = string
+  description = "prefix string put in front of string"
+  default     = "f5xc"
+}
+
+variable "project_suffix" {
+  type        = string
+  description = "prefix string put at the end of string"
+  default     = "01"
+}
+
+variable "project_name" {
+  type    = string
+  default = "lab"
+}
+
+variable "custom_namespace" {
+  type    = string
+  default = "lab-aws-azure-gcp"
 }
 
 variable "f5xc_tenant" {
   type = string
+}
+
+variable "f5xc_namespace" {
+  type    = string
+  default = "system"
+}
+
+variable "f5xc_api_cert" {
+  default = ""
 }
 
 variable "f5xc_api_url" {
@@ -23,7 +50,7 @@ variable "f5xc_api_p12_file" {
 }
 
 variable "f5xc_api_key" {
-  type = string
+  type    = string
   default = ""
 }
 
@@ -44,32 +71,32 @@ variable "gcp_project_id" {
 }
 
 variable "azure_subscription_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "azure_client_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "azure_client_secret" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "azure_tenant_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "owner_tag" {
-  type = string
+  type    = string
   default = "owner unknown"
 }
 
 variable "workload_user_data_file" {
-  type = string
+  type    = string
   default = "./workload_custom_data.sh"
 }
 
@@ -78,16 +105,35 @@ variable "tailscale_key" {
 }
 
 variable "grafana_agent_stack_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "grafana_api_key" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "grafana_api_url" {
-  type = string
+  type    = string
   default = ""
+}
+
+variable "build_aws" {
+  type    = bool
+  default = true
+}
+
+variable "build_azure" {
+  type    = bool
+  default = true
+}
+
+variable "build_gcp" {
+  type    = bool
+  default = true
+}
+
+variable "ssh_public_key_file" {
+  type = string
 }

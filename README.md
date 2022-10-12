@@ -1,20 +1,22 @@
-# f5xc-aws-azure-lab
+# F5-XC-AWS-AZURE-GCP-LAB
 
+This repository consists of Terraform templates to bring up a F5XC Azure Vnet Hub and Spoke environment.
 
-```
-$ export TF_VAR_f5xc_api_token=..............
-```
+## Usage
 
+- Clone this repo with: `git clone --recurse-submodules https://github.com/cklewar/f5-xc-uc-aws-azure-lab`
+- Enter repository directory with: `cd f5-xc-uc-aws-azure-lab`
+- Obtain F5XC API certificate file from Console and save it to `cert` directory
+- Pick and choose from below examples and add mandatory input data and copy data into file `main.tf.example`.
+- Rename file __main.tf.example__ to __main.tf__ with: `rename main.tf.example main.tf`
+- Initialize with: `terraform init`
+- Apply with: `terraform apply -auto-approve` or destroy with: `terraform destroy -auto-approve`
 
-```
-git submodule update --init --recursive
-```
+### Example Output
 
-Example output of a deployment with 2 Azure and 2 AWS sites:
+Example output of a deployment with 2 Azure and 2 AWS sites.
 
-```
-$ terraform output
-
+```bash
 aws-site-2a = {
   "aws_subnet_id" = {
     "0" = "subnet-03842c97783c95587"
@@ -127,9 +129,14 @@ gcp-site-3b = {
 }
 ```
 
-access to workload instances via tailscale:
+## AWS - Azure Lab usage example
 
-```
+````hcl
+````
+
+Access to workload instances via tailscale:
+
+```bash
 $ tailscale status|grep mwlab
 100.66.170.187  mwlab-aws-2a-workload mwiget@      linux   -
 100.119.43.182  mwlab-aws-2b-workload mwiget@      linux   -
@@ -139,7 +146,7 @@ $ tailscale status|grep mwlab
 100.78.134.207  mwlab-gcp-3b-workload mwiget@      linux   -
 ```
 
-```
+```bash
 $ ssh ubuntu@mwlab-azure-1a-workload 
 The authenticity of host 'mwlab-azure-1a-workload (100.80.104.134)' can't be established.
 ED25519 key fingerprint is SHA256:jVhO0fqGt+m7s2GS5JPyFM94j7Cn/Gk4EQUTk64Op3g.
@@ -150,26 +157,24 @@ Welcome to Ubuntu 18.04.6 LTS (GNU/Linux 5.4.0-1086-azure x86_64)
 ubuntu@mwlab-azure-1a:~$ 
 ```
 
+Some useful commands:
 
-some useful commands:
+* Grep for resource groups
 
-grep for resource groups
-
-```
+```bash
 az group list --output table | grep mw-
 mw-azure-site1    westus2   Succeeded
 ```
 
-delete resource group
+* Delete resource group
 
-```
+```bash
 az group delete --name mw-azure-site1
 ```
 
+* Something destroy fails with
 
-something destroy fails with
-
-```
+```bash
 s/mwlab-azure-1b-outside]
 module.azure-site-1b[0].module.outside_subnet.azurerm_subnet.sn: Still destroying... [id=/subscriptions/e9cbbd48-704d-4dfa-bf62-...zure-1b/subnets/mwlab-azure-1b-outside, 10s elapsed]
 module.azure-site-1b[0].module.outside_subnet.azurerm_subnet.sn: Destruction complete after 11s
@@ -183,10 +188,9 @@ module.azure-site-1b[0].module.outside_subnet.azurerm_subnet.sn: Destruction com
 │ 
 ```
 
-Rerun destroy after a few minutes will succeed.
+* Rerun destroy after a few minutes will succeed.
 
-
-## validation
+## Validation
 
 ```
 $ ./validate.sh

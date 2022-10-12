@@ -22,10 +22,6 @@ variable "aws_az_name" {
   type = string
 }
 
-variable "name" {
-  type = string
-}
-
 variable "vpc_cidr_block" {
   type = string
 }
@@ -42,25 +38,39 @@ variable "workload_subnet_cidr_block" {
   type = string
 }
 
-variable "owner_tag" {
-  type = string
-}
-
 variable "ssh_public_key_file" {
   type = string
-  default = "~/.ssh/id_rsa.pub"
 }
 
 variable "allow_cidr_blocks" {
   type = list(string)
 }
 
-variable "custom_tags" {
-  type = map(string)
-  default = {}
-}
-
 variable "f5xc_tenant" {
   type = string
+}
+
+variable "project_prefix" {
+  type        = string
+  description = "prefix string put in front of string"
+}
+
+variable "project_suffix" {
+  type        = string
+  description = "prefix string put at the end of string"
+}
+
+variable "project_name" {
+  type = string
+}
+
+variable "site_name" {
+  type = string
+}
+
+variable "custom_tags" {
+  description = "Custom tags to set on resources"
+  type        = map(string)
+  default     = {}
 }
 

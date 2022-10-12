@@ -1,13 +1,35 @@
-variable "namespace" {}
-variable "name" {}
+variable "project_prefix" {
+  type        = string
+  description = "prefix string put in front of string"
+  default     = "f5xc"
+}
+
+variable "project_suffix" {
+  type        = string
+  description = "prefix string put at the end of string"
+  default     = "01"
+}
+
+variable "project_name" {
+  type    = string
+  default = "lab"
+}
+
+variable "f5xc_tenant" {
+  type = string
+}
+
+variable "f5xc_namespace" {
+  type = string
+}
 
 variable "origin_port" {
-  type = number
+  type    = number
   default = 8080
 }
 
 variable "advertise_port" {
-  type = number
+  type    = number
   default = 80
 }
 

@@ -1,140 +1,93 @@
 module "vpc" {
-  source                = "../mymodules/aws/vpc"
-  aws_vpc_cidr_block    = var.vpc_cidr_block
-  aws_vpc_name          = var.name
-  enable_dns_support    = "true"
-  enable_dns_hostnames  = "true"
-  instance_tenancy      = "default"
-  aws_region            = var.aws_region
-  aws_az_name           = var.aws_az_name
+  source             = "../modules/aws/vpc"
+  aws_region         = var.aws_region
+  aws_az_name        = var.aws_az_name
+  aws_vpc_name       = var.name
+  aws_vpc_cidr_block = var.vpc_cidr_block
+  custom_tags        = var.custom_tags
 }
 
 module "subnet" {
-  source                = "../mymodules/aws/subnet"
-  aws_vpc_id           = module.vpc.aws_vpc_id
-  aws_vpc_subnets      = [
-    { 
-      cidr_block = var.outside_subnet_cidr_block, availability_zone = var.aws_az_name,
+  source          = "../modules/aws/subnet"
+  aws_vpc_id      = module.vpc.aws_vpc["id"]
+  aws_vpc_subnets = [
+    {
+      cidr_block              = var.outside_subnet_cidr_block, availability_zone = var.aws_az_name,
       map_public_ip_on_launch = "true", custom_tags = { "Name" = "${var.name}-outside" }
     },
-    { 
-      cidr_block = var.inside_subnet_cidr_block, availability_zone = var.aws_az_name,
+    {
+      cidr_block              = var.inside_subnet_cidr_block, availability_zone = var.aws_az_name,
       map_public_ip_on_launch = "false", custom_tags = { "Name" = "${var.name}-inside" }
     },
-    { 
-      cidr_block = var.workload_subnet_cidr_block, availability_zone = var.aws_az_name,
+    {
+      cidr_block              = var.workload_subnet_cidr_block, availability_zone = var.aws_az_name,
       map_public_ip_on_launch = "true", custom_tags = { "Name" = "${var.name}-workload" }
     }
   ]
+  custom_tags = var.custom_tags
 }
 
 module "workload" {
-  source                = "../mymodules/aws/ec2"
-  aws_ec2_instance_name = var.name
-  aws_ec2_instance_type = "t3.micro"
-  aws_region            = var.aws_region
-  aws_vpc_id            = module.vpc.aws_vpc_id
-  aws_subnet_id         = module.subnet.aws_subnet_id[2]
-  aws_owner_tag         = var.owner_tag
-  ssh_public_key        = file(var.ssh_public_key_file)
-  user_data             = var.workload_user_data
-  allow_cidr_blocks     = var.allow_cidr_blocks
+  source                            = "../modules/aws/ec2"
+  aws_ec2_instance_name             = var.name
+  aws_ec2_instance_type             = "t3.micro"
+  aws_region                        = var.aws_region
+  aws_vpc_id                        = module.vpc.aws_vpc["id"]
+  aws_subnet_id                     = module.subnet.aws_subnets["${var.name}-workload"]["id"]
+  ssh_public_key                    = file(var.ssh_public_key_file)
+  # user_data                         = var.workload_user_data
+  allow_cidr_blocks                 = var.allow_cidr_blocks
+  aws_az_name                       = var.aws_az_name
+  aws_ec2_instance_custom_data_dirs = []
+  aws_ec2_instance_script           = ""
+  aws_ec2_instance_script_file      = ""
+  aws_ec2_instance_script_template  = ""
+  aws_ec2_private_interface_ips     = []
+  aws_ec2_public_interface_ips      = []
+  aws_subnet_private_id             = ""
+  aws_subnet_public_id              = ""
+  ssh_private_key_file              = ""
+  ssh_public_key_file               = ""
+  template_input_dir_path           = ""
+  template_output_dir_path          = ""
+  custom_tags                       = var.custom_tags
 }
 
 module "site" {
-  source                          = "../mymodules/f5xc/site/aws/vpc"
-  f5xc_namespace                  = "system"
-  f5xc_tenant                     = var.f5xc_tenant
-  f5xc_aws_region                 = var.aws_region
-  f5xc_aws_vpc_site_name          = var.name
-  f5xc_aws_vpc_name_tag           = ""
-  f5xc_aws_vpc_id                 = module.vpc.aws_vpc_id
-  f5xc_aws_vpc_total_worker_nodes = 0
-  f5xc_aws_ce_gw_type             = "multi_nic"
-  aws_owner_tag                   = var.owner_tag
-  custom_tags                     = var.custom_tags
-  f5xc_aws_vpc_az_nodes           = {
-    node0 : { 
-      f5xc_aws_vpc_id               = module.vpc.aws_vpc_id,
-      f5xc_aws_vpc_outside_subnet   = module.subnet.aws_subnet_id[0], 
-      f5xc_aws_vpc_inside_subnet    = module.subnet.aws_subnet_id[1], 
-      f5xc_aws_vpc_workload_subnet  = module.subnet.aws_subnet_id[2], 
-      f5xc_aws_vpc_az_name        = var.aws_az_name
+  source                 = "../modules/f5xc/site/aws/vpc"
+  f5xc_tenant            = var.f5xc_tenant
+  f5xc_aws_cred          = var.f5xc_aws_cred
+  f5xc_namespace         = "system"
+  f5xc_aws_region        = var.aws_region
+  f5xc_aws_vpc_id        = module.vpc.aws_vpc["id"]
+  f5xc_aws_ce_gw_type    = "multi_nic"
+  f5xc_aws_vpc_name_tag  = var.site_name
+  f5xc_aws_vpc_site_name = var.site_name
+  f5xc_aws_vpc_az_nodes  = {
+    node0 : {
+      f5xc_aws_vpc_id              = module.vpc.aws_vpc["id"]
+      f5xc_aws_vpc_outside_subnet  = module.subnet.aws_subnets["${var.site_name}-outside"]["id"],
+      f5xc_aws_vpc_inside_subnet   = module.subnet.aws_subnets["${var.site_name}-inside"]["id"],
+      f5xc_aws_vpc_workload_subnet = module.subnet.aws_subnets["${var.site_name}-workload"]["id"],
+      f5xc_aws_vpc_az_name         = var.aws_az_name
     }
   }
-  f5xc_aws_vpc_inside_static_routes    = [ var.workload_subnet_cidr_block ]
+  f5xc_aws_vpc_no_worker_nodes         = true
   f5xc_aws_default_ce_os_version       = true
   f5xc_aws_default_ce_sw_version       = true
-  f5xc_aws_vpc_no_worker_nodes         = true
   f5xc_aws_vpc_use_http_https_port     = true
+  f5xc_aws_vpc_inside_static_routes    = [var.workload_subnet_cidr_block]
   f5xc_aws_vpc_use_http_https_port_sli = true
-  public_ssh_key                       = "${file(var.ssh_public_key_file)}"
-  f5xc_aws_cred                        = var.f5xc_aws_cred
-  depends_on                           = [module.subnet]
+  public_ssh_key                       = file(var.ssh_public_key_file)
+  custom_tags                          = var.custom_tags
 }
 
-module "site_status_check" {
-  source            = "../mymodules/f5xc/status/site"
-  f5xc_namespace    = "system"
-  f5xc_site_name    = var.name
-  f5xc_tenant       = var.f5xc_tenant
-  f5xc_api_url      = var.f5xc_api_url
-  f5xc_api_token    = var.f5xc_api_token
-  depends_on        = [module.site]
+module "site_wait_for_online" {
+  depends_on     = [module.site]
+  source         = "../modules/f5xc/status/site"
+  f5xc_tenant    = var.f5xc_tenant
+  f5xc_api_url   = var.f5xc_api_url
+  f5xc_api_token = var.f5xc_api_token
+  f5xc_namespace = "system"
+  f5xc_site_name = format("%s-vpc-sn-snic-new-vpc-and-snet-%s", var.project_prefix, var.project_suffix)
 }
-
-data "aws_network_interface" "slo" {
-  filter { 
-    name    = "tag:ves-io-site-name"
-    values  = [ var.name ]
-  }
-  filter { 
-    name    = "tag:ves.io/interface-type"
-    values  = [ "site-local-outside" ]
-  }
-  depends_on        = [module.site_status_check]
-}
-
-data "aws_network_interface" "sli" {
-  filter { 
-    name    = "tag:ves-io-site-name"
-    values  = [ var.name ]
-  }
-  filter { 
-    name    = "tag:ves.io/interface-type"
-    values  = [ "site-local-inside" ]
-  }
-  depends_on        = [module.site_status_check]
-}
-
-output "aws_vpc_id" {
-  value = module.vpc.aws_vpc_id
-}
-
-output "aws_subnet_id" {
-  value = module.subnet.aws_subnet_id
-}
-
-output aws_workload_private_ip {
-  value = module.workload.private_ip
-}
-output aws_workload_public_ip {
-  value = module.workload.public_ip
-}
-
-output "sli_private_ip" {
-  value = data.aws_network_interface.sli.private_ip
-  depends_on = [module.site_status_check]
-}
-output "slo_private_ip" {
-  value = data.aws_network_interface.slo.private_ip
-  depends_on = [module.site_status_check]
-}
-output "slo_public_ip" {
-  value = data.aws_network_interface.slo.association[0]["public_ip"]
-  depends_on = [module.site_status_check]
-}
-
-#output "test" {
-#  value = module.subnet.aws_subnet_id[0]
-#}

@@ -22,7 +22,7 @@ variable "gcp_az_name" {
   type = string
 }
 
-variable "name" {
+variable "site_name" {
   type = string
 }
 
@@ -31,12 +31,12 @@ variable "network_cidr_block" {
 }
 
 variable "f5xc_gcp_inside_network_name" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "f5xc_gcp_inside_subnet_name" {
-  type = string
+  type    = string
   default = ""
 }
 
@@ -48,13 +48,8 @@ variable "inside_subnet_cidr_block" {
   type = string
 }
 
-variable "owner_tag" {
-  type = string
-}
-
 variable "ssh_public_key_file" {
   type = string
-  default = "~/.ssh/id_rsa.pub"
 }
 
 variable "allow_cidr_blocks" {
@@ -62,7 +57,7 @@ variable "allow_cidr_blocks" {
 }
 
 variable "custom_tags" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
 
