@@ -1,4 +1,4 @@
-variable "instance_user_data" {
+variable "instance_template_data" {
   type = string
 }
 

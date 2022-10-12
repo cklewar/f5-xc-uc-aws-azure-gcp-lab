@@ -35,24 +35,16 @@ module "workload" {
   aws_ec2_private_interface_ips = ["172.16.193.10"]
   aws_ec2_instance_script       = {
     actions = [
-      "ls -la /tmp/${var.custom_data_dir}",
       format("chmod +x /tmp/%s", var.aws_ec2_instance_script_file_name),
       format("sudo /tmp/%s", var.aws_ec2_instance_script_file_name)
     ]
-    template_data = {
-      CUSTOM_DATA_DIR = format("%s/vcs", var.custom_data_dir)
-      PREFIX          = var.f5xc_aws_tgw_workload_subnet
-      GATEWAY         = cidrhost(module.aws_subnet.aws_subnets[format("%s-aws-ec2-test-private-subnet-%s", var.project_prefix, var.project_suffix)]["cidr_block"], 1)
-      CUSTOM_DATA_DIR = var.custom_data_dir
-      GITEA_VERSION   = var.gitea_version
-      GITEA_PASSWORD  = var.gitea_password
-    }
+    template_data = var.instance_template_data
   }
   aws_ec2_instance_script_template  = var.aws_ec2_instance_script_template_file_name
   aws_ec2_instance_script_file      = var.aws_ec2_instance_script_file_name
-  aws_subnet_private_id             = module.aws_subnet.aws_subnets[format("%s-aws-ec2-test-private-subnet-%s", var.project_prefix, var.project_suffix)]["id"]
-  aws_subnet_public_id              = module.aws_subnet.aws_subnets[format("%s-aws-ec2-test-public-subnet-%s", var.project_prefix, var.project_suffix)]["id"]
-  aws_az_name                       = var.aws_az
+  aws_subnet_private_id             = module.subnet.aws_subnets[format("%s-aws-ec2-test-private-subnet-%s", var.project_prefix, var.project_suffix)]["id"]
+  aws_subnet_public_id              = module.subnet.aws_subnets[format("%s-aws-ec2-test-public-subnet-%s", var.project_prefix, var.project_suffix)]["id"]
+  aws_az_name                       = var.aws_az_name
   aws_region                        = var.aws_region
   ssh_private_key_file              = var.ssh_private_key_file
   ssh_public_key_file               = var.ssh_public_key_file
@@ -64,48 +56,9 @@ module "workload" {
       name        = "instance_script"
       source      = "${local.template_output_dir_path}/${var.aws_ec2_instance_script_file_name}"
       destination = format("/tmp/%s", var.aws_ec2_instance_script_file_name)
-    },
-    {
-      name        = "additional_custom_data"
-      source      = abspath("${var.custom_data_dir}")
-      destination = "/tmp"
     }
   ]
-  custom_tags = {
-    Name    = format("%s-%s-%s", var.project_prefix, var.aws_ec2_instance_name, var.project_suffix)
-    Version = "1"
-    Owner   = "c.klewar@f5.com"
-  }
-
-  providers = {
-    aws = aws.default
-  }
-}
-
-module "workload" {
-  source                            = "../modules/aws/ec2"
-  aws_ec2_instance_name             = var.site_name
-  aws_ec2_instance_type             = "t3.micro"
-  aws_region                        = var.aws_region
-  aws_vpc_id                        = module.vpc.aws_vpc["id"]
-  #aws_subnet_id                     = module.subnet.aws_subnets[format("%s-%s-sn-workload-%s", var.project_prefix, var.project_name, var.project_suffix)]["id"]
-  ssh_public_key                    = file(var.ssh_public_key_file)
-  # user_data                         = var.workload_user_data
-  allow_cidr_blocks                 = var.allow_cidr_blocks
-  aws_az_name                       = var.aws_az_name
-  aws_ec2_instance_custom_data_dirs = []
-  aws_ec2_instance_script           = ""
-  aws_ec2_instance_script_file      = ""
-  aws_ec2_instance_script_template  = ""
-  aws_ec2_private_interface_ips     = []
-  aws_ec2_public_interface_ips      = []
-  aws_subnet_private_id             = ""
-  aws_subnet_public_id              = ""
-  ssh_private_key_file              = ""
-  ssh_public_key_file               = ""
-  template_input_dir_path           = ""
-  template_output_dir_path          = ""
-  custom_tags                       = var.custom_tags
+  custom_tags = var.custom_tags
 }
 
 module "site" {

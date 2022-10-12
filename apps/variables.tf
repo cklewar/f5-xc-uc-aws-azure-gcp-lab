@@ -1,13 +1,11 @@
 variable "project_prefix" {
   type        = string
   description = "prefix string put in front of string"
-  default     = "f5xc"
 }
 
 variable "project_suffix" {
   type        = string
   description = "prefix string put at the end of string"
-  default     = "01"
 }
 
 variable "project_name" {

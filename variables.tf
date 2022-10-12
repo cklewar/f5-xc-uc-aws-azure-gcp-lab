@@ -95,11 +95,6 @@ variable "owner_tag" {
   default = "owner unknown"
 }
 
-variable "instance_user_data_file" {
-  type    = string
-  default = "./scripts/workload_custom_data.sh"
-}
-
 variable "tailscale_key" {
   type = string
 }
@@ -135,5 +130,9 @@ variable "build_gcp" {
 }
 
 variable "ssh_public_key_file" {
+  type = string
+}
+
+variable "ssh_private_key_file" {
   type = string
 }

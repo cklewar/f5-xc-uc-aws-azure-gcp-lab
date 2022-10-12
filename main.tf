@@ -31,11 +31,11 @@ module "smg" {
 }
 
 /*
-instance_user_data        = templatefile(var.instance_user_data_file, {
+instance_user_data        = {
     tailscale_key          = var.tailscale_key, tailscale_hostname = format("%s-%s-azure-workload-%sa", var.project_prefix, var.project_name, var.project_suffix),
     grafana_agent_stack_id = var.grafana_agent_stack_id, grafana_api_key = var.grafana_api_key,
     grafana_api_url        = var.grafana_api_url
-  })
+  }
 */
 
 module "azure-site-1a" {
@@ -48,10 +48,10 @@ module "azure-site-1a" {
   allow_cidr_blocks         = ["10.64.15.0/24"]
   inside_subnet_cidr_block  = "10.64.17.0/24"
   outside_subnet_cidr_block = "10.64.16.0/24"
-  instance_user_data        = templatefile(var.instance_user_data_file, {
-    tailscale_key = var.tailscale_key,
+  instance_template_data    = {
+    tailscale_key      = var.tailscale_key,
     tailscale_hostname = format("%s-%s-azure-workload-%sa", var.project_prefix, var.project_name, var.project_suffix)
-  })
+  }
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url
   f5xc_api_token      = var.f5xc_api_token
@@ -61,6 +61,7 @@ module "azure-site-1a" {
   project_suffix      = var.project_suffix
   ssh_public_key_file = file(var.ssh_public_key_file)
   custom_tags         = {
+    Name            = local.aws-site-1a
     Owner           = var.owner_tag
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
@@ -80,10 +81,10 @@ module "azure-site-1b" {
   allow_cidr_blocks         = ["10.64.15.0/24"]
   inside_subnet_cidr_block  = "10.64.17.0/24"
   outside_subnet_cidr_block = "10.64.16.0/24"
-  instance_user_data        = templatefile(var.instance_user_data_file, {
-    tailscale_key = var.tailscale_key,
+  instance_template_data    = {
+    tailscale_key      = var.tailscale_key,
     tailscale_hostname = format("%s-%s-azure-workload-%sb", var.project_prefix, var.project_name, var.project_suffix)
-  })
+  }
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url
   f5xc_api_token      = var.f5xc_api_token
@@ -93,6 +94,7 @@ module "azure-site-1b" {
   project_suffix      = var.project_suffix
   ssh_public_key_file = file(var.ssh_public_key_file)
   custom_tags         = {
+    Name            = local.aws-site-1a
     Owner           = var.owner_tag
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
@@ -113,19 +115,21 @@ module "aws-site-1a" {
   inside_subnet_cidr_block   = "10.64.17.0/24"
   outside_subnet_cidr_block  = "10.64.16.0/24"
   workload_subnet_cidr_block = "10.64.18.0/24"
-  instance_user_data         = templatefile(var.instance_user_data_file, {
-    tailscale_key = var.tailscale_key,
+  instance_user_data         = {
+    tailscale_key      = var.tailscale_key,
     tailscale_hostname = format("%s-%s-aws-workload-%sa", var.project_prefix, var.project_name, var.project_suffix)
-  })
-  f5xc_tenant         = var.f5xc_tenant
-  f5xc_api_url        = var.f5xc_api_url
-  f5xc_api_token      = var.f5xc_api_token
-  f5xc_aws_cred       = var.f5xc_aws_cred
-  project_name        = var.project_name
-  project_prefix      = var.project_prefix
-  project_suffix      = var.project_suffix
-  ssh_public_key_file = file(var.ssh_public_key_file)
-  custom_tags         = {
+  }
+  f5xc_tenant          = var.f5xc_tenant
+  f5xc_api_url         = var.f5xc_api_url
+  f5xc_api_token       = var.f5xc_api_token
+  f5xc_aws_cred        = var.f5xc_aws_cred
+  project_name         = var.project_name
+  project_prefix       = var.project_prefix
+  project_suffix       = var.project_suffix
+  ssh_public_key_file  = file(var.ssh_public_key_file)
+  ssh_private_key_file = file(var.ssh_private_key_file)
+  custom_tags          = {
+    Name            = local.aws-site-1a
     Owner           = var.owner_tag
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
@@ -133,6 +137,7 @@ module "aws-site-1a" {
     aws      = aws.eu_north_1
     volterra = volterra.default
   }
+
 }
 
 module "aws-site-1b" {
@@ -146,19 +151,21 @@ module "aws-site-1b" {
   inside_subnet_cidr_block   = "10.64.17.0/24"
   outside_subnet_cidr_block  = "10.64.16.0/24"
   workload_subnet_cidr_block = "10.64.18.0/24"
-  instance_user_data         = templatefile(var.instance_user_data_file, {
-    tailscale_key = var.tailscale_key,
+  instance_template_data     = {
+    tailscale_key      = var.tailscale_key,
     tailscale_hostname = format("%s-%s-aws-workload-%sb", var.project_prefix, var.project_name, var.project_suffix)
-  })
-  f5xc_tenant         = var.f5xc_tenant
-  f5xc_api_url        = var.f5xc_api_url
-  f5xc_api_token      = var.f5xc_api_token
-  f5xc_aws_cred       = var.f5xc_aws_cred
-  project_name        = var.project_name
-  project_prefix      = var.project_prefix
-  project_suffix      = var.project_suffix
-  ssh_public_key_file = file(var.ssh_public_key_file)
-  custom_tags         = {
+  }
+  f5xc_tenant          = var.f5xc_tenant
+  f5xc_api_url         = var.f5xc_api_url
+  f5xc_api_token       = var.f5xc_api_token
+  f5xc_aws_cred        = var.f5xc_aws_cred
+  project_name         = var.project_name
+  project_prefix       = var.project_prefix
+  project_suffix       = var.project_suffix
+  ssh_public_key_file  = file(var.ssh_public_key_file)
+  ssh_private_key_file = file(var.ssh_private_key_file)
+  custom_tags          = {
+    Name            = local.aws-site-1a
     Owner           = var.owner_tag
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
@@ -179,16 +186,17 @@ module "gcp-site-1a" {
   network_cidr_block        = "10.64.16.0/22"
   inside_subnet_cidr_block  = "10.64.17.0/24"
   outside_subnet_cidr_block = "10.64.16.0/24"
-  instance_user_data        = templatefile(var.instance_user_data_file, {
-    tailscale_key = var.tailscale_key,
+  instance_template_data    = {
+    tailscale_key      = var.tailscale_key,
     tailscale_hostname = format("%s-%s-gcp-workload-%sa", var.project_prefix, var.project_name, var.project_suffix)
-  })
+  }
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url
   f5xc_api_token      = var.f5xc_api_token
   f5xc_gcp_cred       = var.f5xc_gcp_cred
   ssh_public_key_file = file(var.ssh_public_key_file)
   custom_tags         = {
+    Name            = local.aws-site-1a
     Owner           = var.owner_tag
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
@@ -210,16 +218,17 @@ module "gcp-site-1b" {
   network_cidr_block        = "10.64.16.0/22"
   inside_subnet_cidr_block  = "10.64.17.0/24"
   outside_subnet_cidr_block = "10.64.16.0/24"
-  instance_user_data        = templatefile(var.instance_user_data_file, {
-    tailscale_key = var.tailscale_key,
+  instance_template_data    = {
+    tailscale_key      = var.tailscale_key,
     tailscale_hostname = format("%s-%s-gcp-workload-%sb", var.project_prefix, var.project_name, var.project_suffix)
-  })
+  }
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url
   f5xc_api_token      = var.f5xc_api_token
   f5xc_gcp_cred       = var.f5xc_gcp_cred
   ssh_public_key_file = file(var.ssh_public_key_file)
   custom_tags         = {
+    Name            = local.aws-site-1a
     Owner           = var.owner_tag
     site_mesh_group = module.smg.site-mesh-group["name"]
   }

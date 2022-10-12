@@ -6,7 +6,7 @@ output "aws_subnet_id" {
   value = module.subnet.aws_subnets.*["id"]
 }
 
-output aws_workload {
+output "workload" {
   value = {
     "private_ip" = module.workload.aws_ec2_instance["private_ip"]
     "public_ip"  = module.workload.aws_ec2_instance["public_ip"]

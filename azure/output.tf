@@ -19,7 +19,7 @@ output "inside_subnet" {
 }
 
 output "workload" {
-  value = module.workload.output
+  value = module.workload.virtual_machine
 }
 
 output "sli_private_ip" {

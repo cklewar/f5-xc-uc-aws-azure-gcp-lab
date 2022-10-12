@@ -1,5 +1,6 @@
-variable "instance_user_data" {
-  type = string
+variable "instance_template_data" {
+  type    = map(string)
+  default = {}
 }
 
 variable "f5xc_aws_cred" {
@@ -42,8 +43,8 @@ variable "ssh_public_key_file" {
   type = string
 }
 
-variable "allow_cidr_blocks" {
-  type = list(string)
+variable "ssh_private_key_file" {
+  type = string
 }
 
 variable "f5xc_tenant" {
@@ -74,3 +75,12 @@ variable "custom_tags" {
   default     = {}
 }
 
+variable "aws_ec2_instance_script_file_name" {
+  type    = string
+  default = "instance_custom_data.sh"
+}
+
+variable "aws_ec2_instance_script_template_file_name" {
+  type    = string
+  default = "instance_custom_data.tftpl"
+}
