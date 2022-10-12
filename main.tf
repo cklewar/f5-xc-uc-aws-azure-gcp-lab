@@ -1,10 +1,10 @@
-module "namespace" {
+/*module "namespacae" {
   source              = "./modules/f5xc/namespace"
   f5xc_namespace_name = var.custom_namespace
   providers           = {
     volterra = volterra.default
   }
-}
+}*/
 
 module "virtual_site" {
   source                                = "./modules/f5xc/site/virtual"
@@ -23,8 +23,7 @@ module "smg" {
   f5xc_namespace                   = var.f5xc_namespace
   f5xc_virtual_site_name           = module.virtual_site.virtual-site["name"]
   f5xc_site_mesh_group_name        = format("%s-%s-smg-%s", var.project_prefix, var.project_name, var.project_suffix)
-  f5xc_virtual_site_selector       = ["site_mesh_group in (aws-azure-gcp)"]
-  f5xc_site_2_site_connection_type = "hub_mesh"
+  f5xc_site_2_site_connection_type = "full_mesh"
   providers                        = {
     volterra = volterra.default
   }
@@ -111,11 +110,11 @@ module "aws-site-1a" {
   aws_region                 = "eu-north-1"
   aws_az_name                = "eu-north-1a"
   vpc_cidr_block             = "10.64.16.0/22"
-  allow_cidr_blocks          = ["10.64.0.0/16"]
+  # allow_cidr_blocks          = ["10.64.0.0/16"]
   inside_subnet_cidr_block   = "10.64.17.0/24"
   outside_subnet_cidr_block  = "10.64.16.0/24"
   workload_subnet_cidr_block = "10.64.18.0/24"
-  instance_user_data         = {
+  instance_template_data     = {
     tailscale_key      = var.tailscale_key,
     tailscale_hostname = format("%s-%s-aws-workload-%sa", var.project_prefix, var.project_name, var.project_suffix)
   }
@@ -147,7 +146,7 @@ module "aws-site-1b" {
   aws_region                 = "eu-north-1"
   aws_az_name                = "eu-north-1b"
   vpc_cidr_block             = "10.64.16.0/22"
-  allow_cidr_blocks          = ["10.64.0.0/16"]
+  # allow_cidr_blocks          = ["10.64.0.0/16"]
   inside_subnet_cidr_block   = "10.64.17.0/24"
   outside_subnet_cidr_block  = "10.64.16.0/24"
   workload_subnet_cidr_block = "10.64.18.0/24"

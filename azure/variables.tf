@@ -68,4 +68,3 @@ variable "custom_tags" {
 variable "f5xc_tenant" {
   type = string
 }
-

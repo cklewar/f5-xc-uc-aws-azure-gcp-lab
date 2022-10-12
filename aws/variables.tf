@@ -84,3 +84,8 @@ variable "aws_ec2_instance_script_template_file_name" {
   type    = string
   default = "instance_custom_data.tftpl"
 }
+
+variable "allow_cidr_blocks" {
+  type    = list(string)
+  default = []
+}

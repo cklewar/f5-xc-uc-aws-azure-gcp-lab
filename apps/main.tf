@@ -18,7 +18,7 @@ module "origin_pool" {
   f5xc_origin_pool_port                      = var.origin_port
   f5xc_origin_pool_no_tls                    = true
   f5xc_origin_pool_origin_servers            = var.origin_servers
-  f5xc_origin_pool_healthcheck_name          = module.healthcheck.healthcheck["name"]
+  f5xc_origin_pool_healthcheck_names         = module.healthcheck.healthcheck["name"]
   f5xc_origin_pool_endpoint_selection        = "DISTRIBUTED"
   f5xc_origin_pool_loadbalancer_algorithm    = "LB_OVERRIDE"
   f5xc_origin_pool_disable_outlier_detection = false

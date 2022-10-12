@@ -136,3 +136,7 @@ variable "ssh_public_key_file" {
 variable "ssh_private_key_file" {
   type = string
 }
+
+variable "gcp_application_credentials" {
+  type    = string
+}

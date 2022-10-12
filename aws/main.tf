@@ -62,16 +62,16 @@ module "workload" {
 }
 
 module "site" {
-  source                 = "../modules/f5xc/site/aws/vpc"
-  f5xc_tenant            = var.f5xc_tenant
-  f5xc_aws_cred          = var.f5xc_aws_cred
-  f5xc_namespace         = "system"
-  f5xc_aws_region        = var.aws_region
-  f5xc_aws_vpc_id        = module.vpc.aws_vpc["id"]
-  f5xc_aws_ce_gw_type    = "multi_nic"
-  f5xc_aws_vpc_name_tag  = var.site_name
-  f5xc_aws_vpc_site_name = var.site_name
-  f5xc_aws_vpc_az_nodes  = {
+  source                   = "../modules/f5xc/site/aws/vpc"
+  f5xc_tenant              = var.f5xc_tenant
+  f5xc_aws_cred            = var.f5xc_aws_cred
+  f5xc_namespace           = "system"
+  f5xc_aws_region          = var.aws_region
+  f5xc_aws_ce_gw_type      = "multi_nic"
+  f5xc_aws_vpc_name_tag    = var.site_name
+  f5xc_aws_vpc_site_name   = var.site_name
+  f5xc_aws_vpc_existing_id = module.vpc.aws_vpc["id"]
+  f5xc_aws_vpc_az_nodes    = {
     node0 : {
       f5xc_aws_vpc_id              = module.vpc.aws_vpc["id"]
       f5xc_aws_vpc_outside_subnet  = module.subnet.aws_subnets[format("%s-%s-sn-outside-%s", var.project_prefix, var.project_name, var.project_suffix)]["id"],

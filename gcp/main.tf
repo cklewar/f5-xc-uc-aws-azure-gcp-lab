@@ -1,9 +1,9 @@
 module "gcp_network" {
-  source                   = "../modules/gcp/network"
-  routing_mode             = "REGIONAL"
-  gcp_project_name         = var.gcp_project_id
-  auto_create_subnetworks  = "false"
-  gcp_compute_network_name = format("%s-%s-network-%s", var.project_prefix, var.project_name, var.project_suffix)
+  source                                      = "../modules/gcp/network"
+  gcp_project_name                            = var.gcp_project_id
+  gcp_compute_network_name                    = format("%s-%s-network-%s", var.project_prefix, var.project_name, var.project_suffix)
+  gcp_compute_network_routing_mode            = "REGIONAL"
+  gcp_compute_network_auto_create_subnetworks = false
 }
 
 module "gcp_subnetwork_outside" {
@@ -26,7 +26,7 @@ module "gcp_subnetwork_inside" {
 module "workload" {
   source                                  = "../modules/gcp/compute"
   gcp_zone_name                           = var.gcp_az_name
-  gcp_compute_instance_tags               = ["ssh", "http"]
+  gcp_compute_instance_target_tags        = ["ssh", "http"]
   gcp_compute_instance_machine_name       = format("%s-%s-gcp-compute-%s", var.project_prefix, var.project_name, var.project_suffix)
   gcp_compute_instance_machine_type       = "n1-standard-1"
   gcp_compute_instance_network_interfaces = [
@@ -67,7 +67,6 @@ module "gcp_compute_firewall_internal" {
 
 module "gcp_compute_firewall_http" {
   source                       = "../modules/gcp/firewall"
-  target_tags                  = ["http"]
   gcp_project_name             = var.gcp_project_id
   gcp_compute_firewall_name    = format("%s-%s-%s-fw-http-%s", var.project_prefix, var.project_name, module.workload.gcp_compute["name"], var.project_suffix)
   compute_firewall_allow_rules = [
@@ -76,13 +75,13 @@ module "gcp_compute_firewall_http" {
       ports    = ["80", "8080"]
     }
   ]
+  gcp_compute_firewall_target_tags     = ["http"]
   gcp_compute_firewall_source_ranges   = [var.allow_cidr_blocks]
   gcp_compute_firewall_compute_network = module.gcp_network.vpc_network["name"]
 }
 
 module "gcp_compute_firewall_ssh" {
   source                       = "../modules/gcp/firewall"
-  target_tags                  = ["ssh"]
   gcp_project_name             = var.gcp_project_id
   gcp_compute_firewall_name    = format("%s-%s-%s-fw-allow-bastion-%s", var.project_prefix, var.project_name, module.workload.gcp_compute["name"], var.project_suffix)
   compute_firewall_allow_rules = [
@@ -91,6 +90,7 @@ module "gcp_compute_firewall_ssh" {
       ports    = ["22"]
     }
   ]
+  gcp_compute_firewall_target_tags     = ["ssh"]
   gcp_compute_firewall_source_ranges   = ["0.0.0.0/0"]
   gcp_compute_firewall_compute_network = module.gcp_network.vpc_network["name"]
 }

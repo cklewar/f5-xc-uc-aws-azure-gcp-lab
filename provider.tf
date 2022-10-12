@@ -34,5 +34,5 @@ provider "google" {
   alias       = "europe_west6"
   region      = "europe-west6"
   project     = var.gcp_project_id
-  credentials = file("~/.config/gcloud/application_default_credentials.json")
+  credentials = var.gcp_application_credentials
 }
