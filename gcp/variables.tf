@@ -1,4 +1,4 @@
-variable "workload_user_data" {
+variable "instance_user_data" {
   type = string
 }
 
@@ -62,6 +62,27 @@ variable "custom_tags" {
 }
 
 variable "f5xc_tenant" {
+  type = string
+}
+
+variable "project_prefix" {
+  type        = string
+  description = "prefix string put in front of string"
+  default     = "f5xc"
+}
+
+variable "project_suffix" {
+  type        = string
+  description = "prefix string put at the end of string"
+  default     = "01"
+}
+
+variable "project_name" {
+  type    = string
+  default = "lab"
+}
+
+variable "gcp_project_id" {
   type = string
 }
 

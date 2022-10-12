@@ -95,9 +95,9 @@ variable "owner_tag" {
   default = "owner unknown"
 }
 
-variable "workload_user_data_file" {
+variable "instance_user_data_file" {
   type    = string
-  default = "./workload_custom_data.sh"
+  default = "./scripts/workload_custom_data.sh"
 }
 
 variable "tailscale_key" {

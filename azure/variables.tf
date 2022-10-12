@@ -16,7 +16,7 @@ variable "site_name" {
   type = string
 }
 
-variable "workload_user_data" {
+variable "instance_user_data" {
   type = string
 }
 

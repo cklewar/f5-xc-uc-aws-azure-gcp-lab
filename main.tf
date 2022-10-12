@@ -30,20 +30,27 @@ module "smg" {
   }
 }
 
+/*
+instance_user_data        = templatefile(var.instance_user_data_file, {
+    tailscale_key          = var.tailscale_key, tailscale_hostname = format("%s-%s-azure-workload-%sa", var.project_prefix, var.project_name, var.project_suffix),
+    grafana_agent_stack_id = var.grafana_agent_stack_id, grafana_api_key = var.grafana_api_key,
+    grafana_api_url        = var.grafana_api_url
+  })
+*/
+
 module "azure-site-1a" {
   count                     = var.build_azure == true ? 1 : 0
   source                    = "./azure"
   azure_az                  = "1"
-  site_name                 = format("%s-%s-azure-%sa", var.project_prefix, var.project_name, var.project_suffix)
+  site_name                 = local.azure-site-1a
   azure_region              = "westus2"
   vnet_cidr_block           = "10.64.16.0/22"
   allow_cidr_blocks         = ["10.64.15.0/24"]
   inside_subnet_cidr_block  = "10.64.17.0/24"
   outside_subnet_cidr_block = "10.64.16.0/24"
-  workload_user_data        = templatefile(var.workload_user_data_file, {
-    tailscale_key          = var.tailscale_key, tailscale_hostname = format("%s-%s-azure-workload-%sa", var.project_prefix, var.project_name, var.project_suffix),
-    grafana_agent_stack_id = var.grafana_agent_stack_id, grafana_api_key = var.grafana_api_key,
-    grafana_api_url        = var.grafana_api_url
+  instance_user_data        = templatefile(var.instance_user_data_file, {
+    tailscale_key = var.tailscale_key,
+    tailscale_hostname = format("%s-%s-azure-workload-%sa", var.project_prefix, var.project_name, var.project_suffix)
   })
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url
@@ -66,18 +73,16 @@ module "azure-site-1a" {
 module "azure-site-1b" {
   count                     = var.build_azure == true ? 1 : 0
   source                    = "./azure"
-  azure_region              = "westus2"
   azure_az                  = "2"
-  site_name                 = format("%s-%s-azure-%sb", var.project_prefix, var.project_name, var.project_suffix)
+  site_name                 = local.azure-site-1b
+  azure_region              = "westus2"
   vnet_cidr_block           = "10.64.16.0/22"
-  outside_subnet_cidr_block = "10.64.16.0/24"
-  inside_subnet_cidr_block  = "10.64.17.0/24"
   allow_cidr_blocks         = ["10.64.15.0/24"]
-
-  workload_user_data = templatefile(var.workload_user_data_file, {
-    tailscale_key          = var.tailscale_key, tailscale_hostname = format("%s-%s-azure-workload-%sb", var.project_prefix, var.project_name, var.project_suffix),
-    grafana_agent_stack_id = var.grafana_agent_stack_id, grafana_api_key = var.grafana_api_key,
-    grafana_api_url        = var.grafana_api_url
+  inside_subnet_cidr_block  = "10.64.17.0/24"
+  outside_subnet_cidr_block = "10.64.16.0/24"
+  instance_user_data        = templatefile(var.instance_user_data_file, {
+    tailscale_key = var.tailscale_key,
+    tailscale_hostname = format("%s-%s-azure-workload-%sb", var.project_prefix, var.project_name, var.project_suffix)
   })
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url
@@ -97,10 +102,10 @@ module "azure-site-1b" {
   }
 }
 
-module "aws-site-2a" {
+module "aws-site-1a" {
   count                      = var.build_aws == true ? 1 : 0
   source                     = "./aws"
-  site_name                  = format("%s-%s-aws-%sa", var.project_prefix, var.project_name, var.project_suffix)
+  site_name                  = local.aws-site-1a
   aws_region                 = "eu-north-1"
   aws_az_name                = "eu-north-1a"
   vpc_cidr_block             = "10.64.16.0/22"
@@ -108,10 +113,9 @@ module "aws-site-2a" {
   inside_subnet_cidr_block   = "10.64.17.0/24"
   outside_subnet_cidr_block  = "10.64.16.0/24"
   workload_subnet_cidr_block = "10.64.18.0/24"
-  workload_user_data         = templatefile(var.workload_user_data_file, {
-    tailscale_key          = var.tailscale_key, tailscale_hostname = format("%s-%s-aws-workload-%sa", var.project_prefix, var.project_name, var.project_suffix),
-    grafana_agent_stack_id = var.grafana_agent_stack_id, grafana_api_key = var.grafana_api_key,
-    grafana_api_url        = var.grafana_api_url
+  instance_user_data         = templatefile(var.instance_user_data_file, {
+    tailscale_key = var.tailscale_key,
+    tailscale_hostname = format("%s-%s-aws-workload-%sa", var.project_prefix, var.project_name, var.project_suffix)
   })
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url
@@ -131,10 +135,10 @@ module "aws-site-2a" {
   }
 }
 
-module "aws-site-2b" {
+module "aws-site-1b" {
   count                      = var.build_aws == true ? 1 : 0
   source                     = "./aws"
-  site_name                  = format("%s-%s-aws-%sb", var.project_prefix, var.project_name, var.project_suffix)
+  site_name                  = local.aws-site-1b
   aws_region                 = "eu-north-1"
   aws_az_name                = "eu-north-1b"
   vpc_cidr_block             = "10.64.16.0/22"
@@ -142,10 +146,9 @@ module "aws-site-2b" {
   inside_subnet_cidr_block   = "10.64.17.0/24"
   outside_subnet_cidr_block  = "10.64.16.0/24"
   workload_subnet_cidr_block = "10.64.18.0/24"
-  workload_user_data         = templatefile(var.workload_user_data_file, {
-    tailscale_key          = var.tailscale_key, tailscale_hostname = format("%s-%s-aws-workload-%sb", var.project_prefix, var.project_name, var.project_suffix),
-    grafana_agent_stack_id = var.grafana_agent_stack_id, grafana_api_key = var.grafana_api_key,
-    grafana_api_url        = var.grafana_api_url
+  instance_user_data         = templatefile(var.instance_user_data_file, {
+    tailscale_key = var.tailscale_key,
+    tailscale_hostname = format("%s-%s-aws-workload-%sb", var.project_prefix, var.project_name, var.project_suffix)
   })
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url
@@ -165,20 +168,20 @@ module "aws-site-2b" {
   }
 }
 
-module "gcp-site-3a" {
+module "gcp-site-1a" {
   count                     = var.build_gcp == true ? 1 : 0
   source                    = "./gcp"
-  site_name                 = format("%s-%s-gcp-%sa", var.project_prefix, var.project_name, var.project_suffix)
+  site_name                 = local.gcp-site-1a
   gcp_region                = "europe-west6"
   gcp_az_name               = "europe-west6-a"
+  gcp_project_id            = var.gcp_project_id
   allow_cidr_blocks         = ["10.64.15.0/24"]
   network_cidr_block        = "10.64.16.0/22"
   inside_subnet_cidr_block  = "10.64.17.0/24"
   outside_subnet_cidr_block = "10.64.16.0/24"
-  workload_user_data        = templatefile(var.workload_user_data_file, {
-    tailscale_key          = var.tailscale_key, tailscale_hostname = format("%s-gcp-workload-%sa", var.project_prefix, var.project_suffix),
-    grafana_agent_stack_id = var.grafana_agent_stack_id, grafana_api_key = var.grafana_api_key,
-    grafana_api_url        = var.grafana_api_url
+  instance_user_data        = templatefile(var.instance_user_data_file, {
+    tailscale_key = var.tailscale_key,
+    tailscale_hostname = format("%s-%s-gcp-workload-%sa", var.project_prefix, var.project_name, var.project_suffix)
   })
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url
@@ -193,22 +196,23 @@ module "gcp-site-3a" {
     google   = google.europe_west6
     volterra = volterra.default
   }
+
 }
 
-module "gcp-site-3b" {
+module "gcp-site-1b" {
   count                     = var.build_gcp == true ? 1 : 0
   source                    = "./gcp"
-  site_name                 = format("%s-%s-gcp-%sb", var.project_prefix, var.project_name, var.project_suffix)
+  site_name                 = local.gcp-site-1b
   gcp_region                = "europe-west6"
   gcp_az_name               = "europe-west6-b"
+  gcp_project_id            = var.gcp_project_id
   allow_cidr_blocks         = ["10.64.15.0/24"]
   network_cidr_block        = "10.64.16.0/22"
   inside_subnet_cidr_block  = "10.64.17.0/24"
   outside_subnet_cidr_block = "10.64.16.0/24"
-  workload_user_data        = templatefile(var.workload_user_data_file, {
-    tailscale_key          = var.tailscale_key, tailscale_hostname = format("%s-lab-gcp-workload-%sb", var.project_prefix, var.project_suffix),
-    grafana_agent_stack_id = var.grafana_agent_stack_id, grafana_api_key = var.grafana_api_key,
-    grafana_api_url        = var.grafana_api_url
+  instance_user_data        = templatefile(var.instance_user_data_file, {
+    tailscale_key = var.tailscale_key,
+    tailscale_hostname = format("%s-%s-gcp-workload-%sb", var.project_prefix, var.project_name, var.project_suffix)
   })
   f5xc_tenant         = var.f5xc_tenant
   f5xc_api_url        = var.f5xc_api_url

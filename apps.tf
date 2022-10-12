@@ -17,7 +17,7 @@ module "apps_site1" {
         site_locator    = {
           site = {
             namespace = var.f5xc_namespace
-            name      = "mwlab-azure-1a"
+            name      = local.azure-site-1a
             tenant    = var.f5xc_tenant
           }
         }
@@ -31,7 +31,7 @@ module "apps_site1" {
         site_locator    = {
           site = {
             namespace = var.f5xc_namespace
-            name      = "mwlab-azure-1b"
+            name      = local.azure-site-1b
             tenant    = var.f5xc_tenant
           }
         }
@@ -64,7 +64,7 @@ module "apps_site2" {
         site_locator    = {
           site = {
             namespace = var.f5xc_namespace
-            name      = "mwlab-aws-2a"
+            name      = local.aws-site-1a
             tenant    = var.f5xc_tenant
           }
         }
@@ -76,7 +76,7 @@ module "apps_site2" {
         site_locator    = {
           site = {
             namespace = var.f5xc_namespace
-            name      = "mwlab-aws-2b"
+            name      = local.aws-site-1b
             tenant    = var.f5xc_tenant
           }
         }
@@ -91,7 +91,7 @@ module "apps_site2" {
 }
 
 module "apps_site3" {
-  depends_on     = [module.gcp-site-3a, module.gcp-site-3b]
+  depends_on     = [module.gcp-site-1a, module.gcp-site-1b]
   count          = 1
   source         = "./apps"
   f5xc_tenant    = var.f5xc_tenant
@@ -103,25 +103,25 @@ module "apps_site3" {
   origin_servers = [
     {
       "private_ip" : {
-        ip              = one(module.gcp-site-3a[*].workload.private_ip)
+        ip              = one(module.gcp-site-1a[*].workload.private_ip)
         inside_network  = true
         outside_network = false
         site_locator    = {
           site = {
             namespace = var.f5xc_namespace
-            name      = "mwlab-gcp-3a"
+            name      = module.gcp-site-1a.site["name"]
             tenant    = var.f5xc_tenant
           }
         }
       },
       "private_ip" : {
-        ip              = one(module.gcp-site-3b[*].workload.private_ip)
+        ip              = one(module.gcp-site-1b[*].workload.private_ip)
         inside_network  = true
         outside_network = false
         site_locator    = {
           site = {
             namespace = var.f5xc_namespace
-            name      = "mwlab-gcp-3b"
+            name      = local.gcp-site-1b
             tenant    = var.f5xc_tenant
           }
         }

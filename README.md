@@ -46,18 +46,18 @@ aws-site-2b = {
 azure-site-1a = {
   "azure_vnet" = {
     "address_space" = "10.64.16.0/22"
-    "name" = "mwlab-azure-1a"
+    "name" = "lab-azure-1a"
   }
   "inside_subnet" = {
     "address_prefix" = "10.64.17.0/24"
-    "name" = "mwlab-azure-1a-inside"
+    "name" = "lab-azure-1a-inside"
   }
   "outside_subnet" = {
     "address_prefix" = "10.64.16.0/24"
-    "name" = "mwlab-azure-1a-outside"
+    "name" = "lab-azure-1a-outside"
   }
   "resource_group_location" = "westus2"
-  "resource_group_name" = "mwlab-azure-1a"
+  "resource_group_name" = "lab-azure-1a"
   "sli_private_ip" = "10.64.17.6"
   "slo_private_ip" = "10.64.16.5"
   "slo_public_ip" = "20.98.105.131"
@@ -69,18 +69,18 @@ azure-site-1a = {
 azure-site-1b = {
   "azure_vnet" = {
     "address_space" = "10.64.16.0/22"
-    "name" = "mwlab-azure-1b"
+    "name" = "lab-azure-1b"
   }
   "inside_subnet" = {
     "address_prefix" = "10.64.17.0/24"
-    "name" = "mwlab-azure-1b-inside"
+    "name" = "lab-azure-1b-inside"
   }
   "outside_subnet" = {
     "address_prefix" = "10.64.16.0/24"
-    "name" = "mwlab-azure-1b-outside"
+    "name" = "lab-azure-1b-outside"
   }
   "resource_group_location" = "westus2"
-  "resource_group_name" = "mwlab-azure-1b"
+  "resource_group_name" = "lab-azure-1b"
   "sli_private_ip" = "10.64.17.6"
   "slo_private_ip" = "10.64.16.5"
   "slo_public_ip" = "20.51.121.61"
@@ -93,13 +93,13 @@ gcp-site-3a = {
   "site" = <<-EOT
   gcp_object_name = v4geegl1zr
   instance_names = [
-    "mwlab-gcp-3a-grf5",
+    "lab-gcp-3a-grf5",
   ]
   master_private_ip_address = {
-    "mwlab-gcp-3a-grf5" = "10.64.16.2"
+    "lab-gcp-3a-grf5" = "10.64.16.2"
   }
   master_public_ip_address = {
-    "mwlab-gcp-3a-grf5" = "34.65.157.172"
+    "lab-gcp-3a-grf5" = "34.65.157.172"
   }
   
   EOT
@@ -112,13 +112,13 @@ gcp-site-3b = {
   "site" = <<-EOT
   gcp_object_name = 
   instance_names = [
-    "mwlab-gcp-3b-b4t0",
+    "lab-gcp-3b-b4t0",
   ]
   master_private_ip_address = {
-    "mwlab-gcp-3b-b4t0" = "10.64.16.2"
+    "lab-gcp-3b-b4t0" = "10.64.16.2"
   }
   master_public_ip_address = {
-    "mwlab-gcp-3b-b4t0" = "34.65.232.12"
+    "lab-gcp-3b-b4t0" = "34.65.232.12"
   }
   
   EOT
@@ -137,24 +137,24 @@ gcp-site-3b = {
 Access to workload instances via tailscale:
 
 ```bash
-$ tailscale status|grep mwlab
-100.66.170.187  mwlab-aws-2a-workload mwiget@      linux   -
-100.119.43.182  mwlab-aws-2b-workload mwiget@      linux   -
-100.80.104.134  mwlab-azure-1a-workload mwiget@    linux   -
-100.94.28.162   mwlab-azure-1b-workload mwiget@    linux   -
-100.125.121.151 mwlab-gcp-3a-workload mwiget@      linux   -
-100.78.134.207  mwlab-gcp-3b-workload mwiget@      linux   -
+$ tailscale status|grep lab
+100.66.170.187  lab-aws-2a-workload mwiget@      linux   -
+100.119.43.182  lab-aws-2b-workload mwiget@      linux   -
+100.80.104.134  lab-azure-1a-workload mwiget@    linux   -
+100.94.28.162   lab-azure-1b-workload mwiget@    linux   -
+100.125.121.151 lab-gcp-3a-workload mwiget@      linux   -
+100.78.134.207  lab-gcp-3b-workload mwiget@      linux   -
 ```
 
 ```bash
-$ ssh ubuntu@mwlab-azure-1a-workload 
-The authenticity of host 'mwlab-azure-1a-workload (100.80.104.134)' can't be established.
+$ ssh ubuntu@lab-azure-1a-workload 
+The authenticity of host 'lab-azure-1a-workload (100.80.104.134)' can't be established.
 ED25519 key fingerprint is SHA256:jVhO0fqGt+m7s2GS5JPyFM94j7Cn/Gk4EQUTk64Op3g.
 This key is not known by any other names
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'mwlab-azure-1a-workload' (ED25519) to the list of known hosts.
+Warning: Permanently added 'lab-azure-1a-workload' (ED25519) to the list of known hosts.
 Welcome to Ubuntu 18.04.6 LTS (GNU/Linux 5.4.0-1086-azure x86_64)
-ubuntu@mwlab-azure-1a:~$ 
+ubuntu@lab-azure-1a:~$ 
 ```
 
 Some useful commands:
@@ -175,16 +175,16 @@ az group delete --name mw-azure-site1
 * Something destroy fails with
 
 ```bash
-s/mwlab-azure-1b-outside]
-module.azure-site-1b[0].module.outside_subnet.azurerm_subnet.sn: Still destroying... [id=/subscriptions/e9cbbd48-704d-4dfa-bf62-...zure-1b/subnets/mwlab-azure-1b-outside, 10s elapsed]
+s/lab-azure-1b-outside]
+module.azure-site-1b[0].module.outside_subnet.azurerm_subnet.sn: Still destroying... [id=/subscriptions/e9cbbd48-704d-4dfa-bf62-...zure-1b/subnets/lab-azure-1b-outside, 10s elapsed]
 module.azure-site-1b[0].module.outside_subnet.azurerm_subnet.sn: Destruction complete after 11s
 ╷
-│ Error: waiting for update of Network Interface: (Name "mwlab-azure-1b" / Resource Group "mwlab-azure-1b"): Code="OperationNotAllowed" Message="Operation 'startTenantUpdate' is not allowed on VM 'mwlab-azure-1b' since the VM is marked for deletion. You can only retry the Delete operation (or wait for an ongoing one to complete)." Details=[]
+│ Error: waiting for update of Network Interface: (Name "lab-azure-1b" / Resource Group "lab-azure-1b"): Code="OperationNotAllowed" Message="Operation 'startTenantUpdate' is not allowed on VM 'lab-azure-1b' since the VM is marked for deletion. You can only retry the Delete operation (or wait for an ongoing one to complete)." Details=[]
 │ 
 │ 
 ╵
 ╷
-│ Error: removing Network Security Group Association from Subnet: (Name "mwlab-azure-1b-inside" / Virtual Network Name "mwlab-azure-1b" / Resource Group "mwlab-azure-1b"): network.SubnetsClient#CreateOrUpdate: Failure sending request: StatusCode=400 -- Original Error: Code="ReferencedResourceNotProvisioned" Message="Cannot proceed with operation because resource /subscriptions/e9cbbd48-704d-4dfa-bf62-60edda755a66/resourceGroups/mwlab-azure-1b/providers/Microsoft.Network/networkInterfaces/mwlab-azure-1b/ipConfigurations/internal used by resource /subscriptions/e9cbbd48-704d-4dfa-bf62-60edda755a66/resourceGroups/mwlab-azure-1b/providers/Microsoft.Network/virtualNetworks/mwlab-azure-1b/subnets/mwlab-azure-1b-inside is not in Succeeded state. Resource is in Failed state and the last operation that updated/is updating the resource is PutNicOperation." Details=[]
+│ Error: removing Network Security Group Association from Subnet: (Name "lab-azure-1b-inside" / Virtual Network Name "lab-azure-1b" / Resource Group "lab-azure-1b"): network.SubnetsClient#CreateOrUpdate: Failure sending request: StatusCode=400 -- Original Error: Code="ReferencedResourceNotProvisioned" Message="Cannot proceed with operation because resource /subscriptions/e9cbbd48-704d-4dfa-bf62-60edda755a66/resourceGroups/lab-azure-1b/providers/Microsoft.Network/networkInterfaces/lab-azure-1b/ipConfigurations/internal used by resource /subscriptions/e9cbbd48-704d-4dfa-bf62-60edda755a66/resourceGroups/lab-azure-1b/providers/Microsoft.Network/virtualNetworks/lab-azure-1b/subnets/lab-azure-1b-inside is not in Succeeded state. Resource is in Failed state and the last operation that updated/is updating the resource is PutNicOperation." Details=[]
 │ 
 ```
 
@@ -194,23 +194,23 @@ module.azure-site-1b[0].module.outside_subnet.azurerm_subnet.sn: Destruction com
 
 ```
 $ ./validate.sh
-mwlab-azure-1a-workload curl workload.site1 ... Short Name: mwlab-azure-1b good
-mwlab-azure-1a-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
-mwlab-azure-1a-workload curl workload.site3 ... Short Name: mwlab-gcp-3b good
-mwlab-azure-1b-workload curl workload.site1 ... Short Name: mwlab-azure-1b good
-mwlab-azure-1b-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
-mwlab-azure-1b-workload curl workload.site3 ... Short Name: mwlab-gcp-3a good
-mwlab-aws-2a-workload curl workload.site1 ... Short Name: mwlab-azure-1a good
-mwlab-aws-2a-workload curl workload.site2 ... Short Name: ip-10-64-18-241 good
-mwlab-aws-2a-workload curl workload.site3 ... Short Name: mwlab-gcp-3b good
-mwlab-aws-2b-workload curl workload.site1 ... Short Name: mwlab-azure-1a good
-mwlab-aws-2b-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
-mwlab-aws-2b-workload curl workload.site3 ... Short Name: mwlab-gcp-3b good
-mwlab-gcp-3a-workload curl workload.site1 ... Short Name: mwlab-azure-1a good
-mwlab-gcp-3a-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
-mwlab-gcp-3a-workload curl workload.site3 ... Short Name: mwlab-gcp-3b good
-mwlab-gcp-3b-workload curl workload.site1 ... Short Name: mwlab-azure-1b good
-mwlab-gcp-3b-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
-mwlab-gcp-3b-workload curl workload.site3 ... Short Name: mwlab-gcp-3b good
+lab-azure-1a-workload curl workload.site1 ... Short Name: lab-azure-1b good
+lab-azure-1a-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
+lab-azure-1a-workload curl workload.site3 ... Short Name: lab-gcp-3b good
+lab-azure-1b-workload curl workload.site1 ... Short Name: lab-azure-1b good
+lab-azure-1b-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
+lab-azure-1b-workload curl workload.site3 ... Short Name: lab-gcp-3a good
+lab-aws-2a-workload curl workload.site1 ... Short Name: lab-azure-1a good
+lab-aws-2a-workload curl workload.site2 ... Short Name: ip-10-64-18-241 good
+lab-aws-2a-workload curl workload.site3 ... Short Name: lab-gcp-3b good
+lab-aws-2b-workload curl workload.site1 ... Short Name: lab-azure-1a good
+lab-aws-2b-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
+lab-aws-2b-workload curl workload.site3 ... Short Name: lab-gcp-3b good
+lab-gcp-3a-workload curl workload.site1 ... Short Name: lab-azure-1a good
+lab-gcp-3a-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
+lab-gcp-3a-workload curl workload.site3 ... Short Name: lab-gcp-3b good
+lab-gcp-3b-workload curl workload.site1 ... Short Name: lab-azure-1b good
+lab-gcp-3b-workload curl workload.site2 ... Short Name: ip-10-64-18-155 good
+lab-gcp-3b-workload curl workload.site3 ... Short Name: lab-gcp-3b good
 ```
 

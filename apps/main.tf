@@ -17,10 +17,10 @@ module "origin_pool" {
   f5xc_origin_pool_name                      = format("%s-%s-op-%s", var.project_prefix, var.project_name, var.project_suffix)
   f5xc_origin_pool_port                      = var.origin_port
   f5xc_origin_pool_no_tls                    = true
+  f5xc_origin_pool_origin_servers            = var.origin_servers
   f5xc_origin_pool_healthcheck_name          = module.healthcheck.healthcheck["name"]
   f5xc_origin_pool_endpoint_selection        = "DISTRIBUTED"
   f5xc_origin_pool_loadbalancer_algorithm    = "LB_OVERRIDE"
-  f5xc_origin_pool_origin_servers            = var.origin_servers
   f5xc_origin_pool_disable_outlier_detection = false
   f5xc_origin_pool_outlier_detection         = {
     interval                    = 5000
@@ -28,46 +28,6 @@ module "origin_pool" {
     base_ejection_time          = 10000
     max_ejection_percent        = 100
     consecutive_gateway_failure = 2
-  }
-}
-
-resource "volterra_origin_pool" "op" {
-  name                   = var.name
-  namespace              = var.namespace
-  endpoint_selection     = "DISTRIBUTED"
-  loadbalancer_algorithm = "LB_OVERRIDE"
-  port                   = var.origin_port
-  no_tls                 = true
-
-  dynamic "origin_servers" {
-    for_each = var.origin_servers
-    content {
-      private_ip {
-        ip             = var.origin_servers[origin_servers.key].ip
-        inside_network = true
-        site_locator {
-          site {
-            namespace = "system"
-            name      = origin_servers.key
-          }
-        }
-      }
-    }
-  }
-
-  advanced_options {
-    disable_outlier_detection = false
-    outlier_detection {
-      base_ejection_time          = 10000
-      consecutive_5xx             = 2
-      consecutive_gateway_failure = 2
-      interval                    = 5000
-      max_ejection_percent        = 100
-    }
-  }
-
-  healthcheck {
-    name = volterra_healthcheck.hc.name
   }
 }
 

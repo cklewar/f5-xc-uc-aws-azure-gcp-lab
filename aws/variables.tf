@@ -1,4 +1,4 @@
-variable "workload_user_data" {
+variable "instance_user_data" {
   type = string
 }
 

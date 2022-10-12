@@ -12,7 +12,6 @@ variable "project_suffix" {
 
 variable "project_name" {
   type    = string
-  default = "lab"
 }
 
 variable "f5xc_tenant" {
