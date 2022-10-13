@@ -59,11 +59,13 @@ variable "f5xc_azure_cred" {
 }
 
 variable "f5xc_aws_cred" {
-  type = string
+  type    = string
+  default = "ck-aws-01"
 }
 
 variable "f5xc_gcp_cred" {
-  type = string
+  type    = string
+  default = "ck-gcp-01"
 }
 
 variable "gcp_project_id" {
