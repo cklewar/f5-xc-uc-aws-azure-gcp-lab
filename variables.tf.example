@@ -55,7 +55,8 @@ variable "f5xc_api_key" {
 }
 
 variable "f5xc_azure_cred" {
-  type = string
+  type    = string
+  default = "sun-az-creds"
 }
 
 variable "f5xc_aws_cred" {
