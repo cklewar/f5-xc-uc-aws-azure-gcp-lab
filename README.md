@@ -7,8 +7,10 @@ This repository consists of Terraform templates to bring up a F5XC AWS Azure GCP
 - Clone this repo with: `git clone --recurse-submodules https://github.com/cklewar/f5-xc-uc-aws-azure-lab`
 - Enter repository directory with: `cd f5-xc-uc-aws-azure-lab`
 - Obtain F5XC API certificate file from Console and save it to `cert` directory
-- Pick and choose from below examples and add mandatory input data and copy data into file `main.tf.example`.
+- Pick and choose from below examples and add mandatory input data and copy data into file `main.tf.example`
 - Rename file __main.tf.example__ to __main.tf__ with: `rename main.tf.example main.tf`
+- Rename file __variables.tf.example__ to __variable.tf__ with: `rename variables.tf.example variable.tf`
+- Rename file __apps.tf.example__ to __variable.tf__ with: `rename apps.tf.example apps.tf`
 - Initialize with: `terraform init`
 - Apply with: `terraform apply -auto-approve` or destroy with: `terraform destroy -auto-approve`
 

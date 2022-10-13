@@ -29,14 +29,6 @@ module "smg" {
   }
 }
 
-/*
-instance_user_data        = {
-    tailscale_key          = var.tailscale_key, tailscale_hostname = format("%s-%s-azure-workload-%sa", var.project_prefix, var.project_name, var.project_suffix),
-    grafana_agent_stack_id = var.grafana_agent_stack_id, grafana_api_key = var.grafana_api_key,
-    grafana_api_url        = var.grafana_api_url
-  }
-*/
-
 module "azure-site-1a" {
   count                     = var.build_azure == true ? 1 : 0
   source                    = "./azure"
