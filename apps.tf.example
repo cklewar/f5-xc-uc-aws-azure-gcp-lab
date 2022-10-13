@@ -108,7 +108,7 @@ module "apps_gcp_site1" {
   f5xc_origin_pool_origin_servers = {
     "private_ip" : [
       {
-        ip              = one(module.gcp-site-1a[*].workload.private_ip)
+        ip              = "2.2.2.2" #one(module.gcp-site-1a[*].workload.private_ip)
         inside_network  = true
         outside_network = false
         site_locator    = {
@@ -120,7 +120,7 @@ module "apps_gcp_site1" {
         }
       },
       {
-        ip              = one(module.gcp-site-1b[*].workload.private_ip)
+        ip              = "1.1.1.1" #one(module.gcp-site-1b[*].workload.private_ip)
         inside_network  = true
         outside_network = false
         site_locator    = {
