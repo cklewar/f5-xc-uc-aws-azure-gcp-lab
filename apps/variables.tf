@@ -1,17 +1,3 @@
-variable "project_prefix" {
-  type        = string
-  description = "prefix string put in front of string"
-}
-
-variable "project_suffix" {
-  type        = string
-  description = "prefix string put at the end of string"
-}
-
-variable "project_name" {
-  type    = string
-}
-
 variable "f5xc_tenant" {
   type = string
 }
@@ -42,4 +28,8 @@ variable "f5xc_origin_pool_origin_servers" {}
 
 variable "domains" {
   type = list(string)
+}
+
+variable "app_site_name" {
+  type = string
 }

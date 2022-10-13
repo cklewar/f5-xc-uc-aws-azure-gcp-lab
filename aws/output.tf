@@ -2,7 +2,7 @@ output "aws_vpc_id" {
   value = module.vpc.aws_vpc["id"]
 }
 
-output "aws_subnet_id" {
+/*output "aws_subnet_id" {
   value = module.subnet.aws_subnets[*]
 }
 
@@ -26,4 +26,4 @@ output "slo_private_ip" {
 output "slo_public_ip" {
   depends_on = [module.site_wait_for_online]
   value      = data.aws_network_interface.slo.association[0]["public_ip"]
-}
+}*/

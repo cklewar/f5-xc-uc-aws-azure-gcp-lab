@@ -7,13 +7,13 @@ module "vpc" {
   custom_tags        = var.custom_tags
 }
 
-module "subnet" {
+/*module "subnet" {
   source          = "../modules/aws/subnet"
   aws_vpc_id      = module.vpc.aws_vpc["id"]
   aws_vpc_subnets = [
     {
       cidr_block              = var.outside_subnet_cidr_block, availability_zone = var.aws_az_name,
-      map_public_ip_on_launch = "true", custom_tags = { "Name" = format("%s-sn-outside-%s", var.site_name) }
+      map_public_ip_on_launch = "true", custom_tags = { "Name" = format("%s-sn-outside", var.site_name) }
     },
     {
       cidr_block              = var.inside_subnet_cidr_block, availability_zone = var.aws_az_name,
@@ -98,4 +98,4 @@ module "site_wait_for_online" {
   f5xc_api_token = var.f5xc_api_token
   f5xc_namespace = "system"
   f5xc_site_name = var.site_name
-}
+}*/

@@ -1,4 +1,4 @@
-data "aws_network_interface" "slo" {
+/*data "aws_network_interface" "slo" {
   depends_on = [module.site_wait_for_online]
   filter {
     name   = "tag:ves-io-site-name"
@@ -20,4 +20,4 @@ data "aws_network_interface" "sli" {
     name   = "tag:ves.io/interface-type"
     values = ["site-local-inside"]
   }
-}
+}*/

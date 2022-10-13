@@ -2,7 +2,7 @@ module "healthcheck" {
   source                               = "../modules/f5xc/healthcheck"
   f5xc_tenant                          = var.f5xc_tenant
   f5xc_namespace                       = var.f5xc_namespace
-  f5xc_healthcheck_name                = format("%s-%s-hc-%s", var.project_prefix, var.project_name, var.project_suffix)
+  f5xc_healthcheck_name                = format("%s-hc", var.app_site_name)
   f5xc_healthcheck_path                = "/"
   f5xc_healthcheck_timeout             = 1
   f5xc_healthcheck_interval            = 15
@@ -14,7 +14,7 @@ module "origin_pool" {
   source                                     = "../modules/f5xc/origin-pool"
   f5xc_tenant                                = var.f5xc_tenant
   f5xc_namespace                             = var.f5xc_namespace
-  f5xc_origin_pool_name                      = format("%s-%s-op-%s", var.project_prefix, var.project_name, var.project_suffix)
+  f5xc_origin_pool_name                      = format("%s-op", var.app_site_name)
   f5xc_origin_pool_port                      = var.origin_port
   f5xc_origin_pool_no_tls                    = true
   f5xc_origin_pool_origin_servers            = var.f5xc_origin_pool_origin_servers
@@ -32,7 +32,7 @@ module "origin_pool" {
 }
 
 resource "volterra_http_loadbalancer" "lb" {
-  name                            = format("%s-%s-lb-%s", var.project_prefix, var.project_name, var.project_suffix)
+  name                            = format("%s-lb", var.app_site_name)
   domains                         = var.domains
   namespace                       = var.f5xc_namespace
   disable_waf                     = true

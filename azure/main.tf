@@ -37,7 +37,7 @@ module "site" {
   f5xc_azure_site_name                    = var.site_name
   f5xc_azure_ce_gw_type                   = "multi_nic"
   f5xc_azure_existing_vnet_name           = module.vnet.vnet["name"]
-  f5xc_azure_vnet_site_resource_group     = format("%s-site-rg", var.site_name)
+  f5xc_azure_vnet_site_resource_group     = local.f5xc_azure_vnet_site_resource_group
   f5xc_azure_existing_vnet_resource_group = module.resource_group.resource_group["name"]
   f5xc_azure_az_nodes                     = {
     node0 : {
@@ -97,12 +97,12 @@ resource "azurerm_route_table" "vip" {
 
 resource "azurerm_route" "vip" {
   depends_on             = [module.site_wait_for_online]
-  name                   = "acceptVIP"
+  name                   = format("%s-acceptVIP", var.site_name)
   next_hop_type          = "VirtualAppliance"
   address_prefix         = var.allow_cidr_blocks[0]
   route_table_name       = azurerm_route_table.vip.name
   resource_group_name    = module.resource_group.resource_group["name"]
-  next_hop_in_ip_address = data.azurerm_network_interface.sli.private_ip_address
+  next_hop_in_ip_address = module.site.vnet["sli"]
 }
 
 resource "azurerm_subnet_route_table_association" "vip" {
