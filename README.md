@@ -1,6 +1,6 @@
 # F5-XC-AWS-AZURE-GCP-LAB
 
-This repository consists of Terraform templates to bring up a F5XC Azure Vnet Hub and Spoke environment.
+This repository consists of Terraform templates to bring up a F5XC AWS Azure GCP Lab environment.
 
 ## Usage
 
