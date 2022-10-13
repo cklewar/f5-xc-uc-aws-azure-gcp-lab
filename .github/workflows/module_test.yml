@@ -29,8 +29,8 @@ jobs:
         id: setup_env
         run: |
           cp main.tf.example main.tf
-          cp variables.example.tf variables.tf
-          cp apps.examples.tf apps.tf
+          cp variables.tf.example variables.tf
+          cp apps.tf.example apps.tf
       - name: Setup Terraform
         id: setup_tf
         uses: hashicorp/setup-terraform@v2
@@ -82,8 +82,8 @@ jobs:
         id: setup_env
         run: |
           cp main.tf.example main.tf
-          cp variables.example.tf variables.tf
-          cp apps.examples.tf apps.tf
+          cp variables.tf.example variables.tf
+          cp apps.tf.example apps.tf
       - name: Setup Terraform
         id: setup_tf
         uses: hashicorp/setup-terraform@v2
@@ -147,8 +147,8 @@ jobs:
         id: setup_env
         run: |
           cp main.tf.example main.tf
-          cp variables.example.tf variables.tf
-          cp apps.examples.tf apps.tf
+          cp variables.tf.example variables.tf
+          cp apps.tf.example apps.tf
       - name: Setup Terraform
         id: setup_tf
         uses: hashicorp/setup-terraform@v2
@@ -230,8 +230,8 @@ jobs:
         id: setup_env
         run: |
           cp main.tf.example main.tf
-          cp variables.example.tf variables.tf
-          cp apps.examples.tf apps.tf
+          cp variables.tf.example variables.tf
+          cp apps.tf.example apps.tf
       - name: Setup Terraform
         id: setup_tf
         uses: hashicorp/setup-terraform@v2
