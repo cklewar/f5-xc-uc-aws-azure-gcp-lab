@@ -49,6 +49,8 @@ jobs:
           TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          TF_VAR_f5xc_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_gcp_google_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: terraform init
       - name: Terraform Validate
         id: validate
@@ -109,6 +111,8 @@ jobs:
           TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          TF_VAR_f5xc_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_gcp_google_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: terraform plan -no-color
         continue-on-error: false
       - name: Cleanup environment
@@ -192,6 +196,8 @@ jobs:
           TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          TF_VAR_f5xc_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_gcp_google_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: echo "123" # terraform apply -auto-approve -no-color
         continue-on-error: false
       - name: Cleanup environment
@@ -257,6 +263,8 @@ jobs:
           TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          TF_VAR_f5xc_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_gcp_google_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: echo "123" # terraform destroy -auto-approve -no-color
         continue-on-error: false
       - name: Cleanup environment
