@@ -50,7 +50,7 @@ jobs:
           TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          TF_VAR_f5xc_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           TF_VAR_gcp_application_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: terraform init
       - name: Terraform Validate
@@ -113,7 +113,7 @@ jobs:
           TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          TF_VAR_f5xc_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           TF_VAR_gcp_application_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
           TF_VAR_tailscale_key: ${{ secrets.TAILSCALE_KEY }}
         run: terraform plan -no-color
@@ -200,7 +200,7 @@ jobs:
           TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          TF_VAR_f5xc_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           TF_VAR_gcp_application_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
           TF_VAR_tailscale_key: ${{ secrets.TAILSCALE_KEY }}
         run: echo "123" # terraform apply -auto-approve -no-color
@@ -269,7 +269,7 @@ jobs:
           TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          TF_VAR_f5xc_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           TF_VAR_gcp_application_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
           TF_VAR_tailscale_key: ${{ secrets.TAILSCALE_KEY }}
         run: echo "123" # terraform destroy -auto-approve -no-color
