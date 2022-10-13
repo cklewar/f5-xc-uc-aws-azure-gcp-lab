@@ -144,6 +144,6 @@ variable "gcp_application_credentials" {
   type = string
 }
 
-variable "f5xc_gcp_project_id" {
+variable "gcp_project_id" {
   type = string
 }

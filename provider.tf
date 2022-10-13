@@ -33,6 +33,6 @@ provider "aws" {
 provider "google" {
   alias       = "europe_west6"
   region      = "europe-west6"
-  project     = var.f5xc_gcp_project_id
+  project     = var.gcp_project_id
   credentials = var.gcp_application_credentials
 }
