@@ -1,9 +1,5 @@
-output "resource_group_name" {
-  value = module.resource_group.resource_group["name"]
-}
-
-output "resource_group_location" {
-  value = module.resource_group.resource_group["location"]
+output "resource_group" {
+  value = module.resource_group.resource_group
 }
 
 output "azure_vnet" {
@@ -18,7 +14,7 @@ output "inside_subnet" {
   value = module.inside_subnet.subnet
 }
 
-output "workload" {
+/*output "workload" {
   value = module.workload.virtual_machine
 }
 
@@ -35,4 +31,4 @@ output "slo_private_ip" {
 output "slo_public_ip" {
   depends_on = [module.site_wait_for_online]
   value      = data.azurerm_public_ip.pib.ip_address
-}
+}*/

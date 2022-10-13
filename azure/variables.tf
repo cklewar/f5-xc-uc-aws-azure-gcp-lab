@@ -1,17 +1,3 @@
-variable "project_prefix" {
-  type        = string
-  description = "prefix string put in front of string"
-}
-
-variable "project_suffix" {
-  type        = string
-  description = "prefix string put at the end of string"
-}
-
-variable "project_name" {
-  type = string
-}
-
 variable "site_name" {
   type = string
 }
