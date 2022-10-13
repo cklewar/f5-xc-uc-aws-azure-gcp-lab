@@ -57,7 +57,7 @@ module "azure-site-1a" {
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
   providers = {
-    aws      = aws.eu_north_1
+    aws      = aws.us_west_1
     volterra = volterra.default
   }
 }
@@ -90,7 +90,7 @@ module "azure-site-1b" {
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
   providers = {
-    aws      = aws.eu_north_1
+    aws      = aws.us_west_1
     volterra = volterra.default
   }
 }
@@ -125,10 +125,9 @@ module "aws-site-1a" {
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
   providers = {
-    aws      = aws.eu_north_1
+    aws      = aws.us_west_1
     volterra = volterra.default
   }
-
 }
 
 module "aws-site-1b" {
@@ -161,7 +160,7 @@ module "aws-site-1b" {
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
   providers = {
-    aws      = aws.eu_north_1
+    aws      = aws.us_west_1
     volterra = volterra.default
   }
 }
