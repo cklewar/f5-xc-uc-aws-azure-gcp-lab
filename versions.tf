@@ -1,5 +1,12 @@
 terraform {
   required_version = ">= 1.3.0"
+  cloud {
+    organization = "cklewar"
+
+    workspaces {
+      name = "f5-xc-uc-aws-azure-gcp-lab-module"
+    }
+  }
 
   required_providers {
     volterra = {
