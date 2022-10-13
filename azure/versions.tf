@@ -7,9 +7,9 @@ terraform {
       version = ">= 0.11.14"
     }
 
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.33.0"
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 3.26.0"
     }
 
     local = ">= 2.2.3"

@@ -9,7 +9,7 @@ terraform {
 
     google = {
       source  = "hashicorp/google"
-      version = ">= 4.31.0"
+      version = ">= 4.40.0"
     }
 
     local = ">= 2.2.3"
