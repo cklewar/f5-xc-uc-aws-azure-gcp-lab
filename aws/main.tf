@@ -2,7 +2,7 @@ module "vpc" {
   source             = "../modules/aws/vpc"
   aws_region         = var.aws_region
   aws_az_name        = var.aws_az_name
-  aws_vpc_name       = format("%s-%s-vpc-%s", var.project_prefix, var.project_name, var.project_suffix)
+  aws_vpc_name       = format("%s-vpc", var.site_name)
   aws_vpc_cidr_block = var.vpc_cidr_block
   custom_tags        = var.custom_tags
 }
@@ -13,15 +13,15 @@ module "subnet" {
   aws_vpc_subnets = [
     {
       cidr_block              = var.outside_subnet_cidr_block, availability_zone = var.aws_az_name,
-      map_public_ip_on_launch = "true", custom_tags = { "Name" = format("%s-%s-sn-outside-%s", var.project_prefix, var.project_name, var.project_suffix) }
+      map_public_ip_on_launch = "true", custom_tags = { "Name" = format("%s-sn-outside-%s", var.site_name) }
     },
     {
       cidr_block              = var.inside_subnet_cidr_block, availability_zone = var.aws_az_name,
-      map_public_ip_on_launch = "false", custom_tags = { "Name" = format("%s-%s-sn-inside-%s", var.project_prefix, var.project_name, var.project_suffix) }
+      map_public_ip_on_launch = "false", custom_tags = { "Name" = format("%s-sn-inside", var.site_name) }
     },
     {
       cidr_block              = var.workload_subnet_cidr_block, availability_zone = var.aws_az_name,
-      map_public_ip_on_launch = "true", custom_tags = { "Name" = format("%s-%s-sn-workload-%s", var.project_prefix, var.project_name, var.project_suffix) }
+      map_public_ip_on_launch = "true", custom_tags = { "Name" = format("%s-sn-workload", var.site_name) }
     }
   ]
   custom_tags = var.custom_tags
@@ -29,10 +29,10 @@ module "subnet" {
 
 module "workload" {
   source                        = "../modules/aws/ec2"
-  aws_region                        = var.aws_region
-  aws_vpc_id                        = module.vpc.aws_vpc["id"]
-  aws_az_name                       = var.aws_az_name
-  aws_ec2_instance_name         = format("%s-%s-ec2-%s", var.project_prefix, var.project_name, var.project_suffix)
+  aws_region                    = var.aws_region
+  aws_vpc_id                    = module.vpc.aws_vpc["id"]
+  aws_az_name                   = var.aws_az_name
+  aws_ec2_instance_name         = format("%s-ec2-workload", var.site_name)
   aws_ec2_instance_type         = "t3.micro"
   aws_ec2_public_interface_ips  = ["172.16.192.10"]
   aws_ec2_private_interface_ips = ["172.16.193.10"]
@@ -43,8 +43,8 @@ module "workload" {
     ]
     template_data = var.instance_template_data
   }
-  aws_subnet_private_id             = module.subnet.aws_subnets[format("%s-%s-sn-workload-%s", var.project_prefix, var.project_name, var.project_suffix)]["id"]
-  aws_subnet_public_id              = module.subnet.aws_subnets[format("%s-%s-sn-outside-%s", var.project_prefix, var.project_name, var.project_suffix)]["id"]
+  aws_subnet_private_id             = module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"]
+  aws_subnet_public_id              = module.subnet.aws_subnets[format("%s-sn-outside", var.site_name)]["id"]
   ssh_public_key_file               = var.ssh_public_key_file
   ssh_private_key_file              = var.ssh_private_key_file
   template_input_dir_path           = local.template_input_dir_path
@@ -74,9 +74,9 @@ module "site" {
   f5xc_aws_vpc_az_nodes    = {
     node0 : {
       f5xc_aws_vpc_id              = module.vpc.aws_vpc["id"]
-      f5xc_aws_vpc_outside_subnet  = module.subnet.aws_subnets[format("%s-%s-sn-outside-%s", var.project_prefix, var.project_name, var.project_suffix)]["id"],
-      f5xc_aws_vpc_inside_subnet   = module.subnet.aws_subnets[format("%s-%s-sn-inside-%s", var.project_prefix, var.project_name, var.project_suffix)]["id"],
-      f5xc_aws_vpc_workload_subnet = module.subnet.aws_subnets[format("%s-%s-sn-workload-%s", var.project_prefix, var.project_name, var.project_suffix)]["id"],
+      f5xc_aws_vpc_outside_subnet  = module.subnet.aws_subnets[format("%s-sn-outside", var.site_name)]["id"],
+      f5xc_aws_vpc_inside_subnet   = module.subnet.aws_subnets[format("%s-sn-inside", var.site_name)]["id"],
+      f5xc_aws_vpc_workload_subnet = module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"],
       f5xc_aws_vpc_az_name         = var.aws_az_name
     }
   }

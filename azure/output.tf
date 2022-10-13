@@ -14,7 +14,7 @@ output "inside_subnet" {
   value = module.inside_subnet.subnet
 }
 
-/*output "workload" {
+output "workload" {
   value = module.workload.virtual_machine
 }
 
@@ -31,4 +31,4 @@ output "slo_private_ip" {
 output "slo_public_ip" {
   depends_on = [module.site_wait_for_online]
   value      = data.azurerm_public_ip.pib.ip_address
-}*/
+}

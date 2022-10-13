@@ -1,7 +1,7 @@
 module "gcp_network" {
   source                                      = "../modules/gcp/network"
   gcp_project_name                            = var.gcp_project_id
-  gcp_compute_network_name                    = format("%s-%s-network-%s", var.project_prefix, var.project_name, var.project_suffix)
+  gcp_compute_network_name                    = format("%s-network", var.site_name)
   gcp_compute_network_routing_mode            = "REGIONAL"
   gcp_compute_network_auto_create_subnetworks = false
 }
@@ -10,7 +10,7 @@ module "gcp_subnetwork_outside" {
   source                               = "../modules/gcp/subnetwork"
   gcp_region                           = var.gcp_region
   gcp_compute_network_id               = module.gcp_network.vpc_network["id"]
-  gcp_compute_subnetwork_name          = format("%s-%s-sn-outside-%s", var.project_prefix, var.project_name, var.project_suffix)
+  gcp_compute_subnetwork_name          = format("%s-sn-outside", var.site_name)
   gcp_compute_subnetwork_ip_cidr_range = var.outside_subnet_cidr_block
 
 }
@@ -19,7 +19,7 @@ module "gcp_subnetwork_inside" {
   source                               = "../modules/gcp/subnetwork"
   gcp_region                           = var.gcp_region
   gcp_compute_network_id               = module.gcp_network.vpc_network["id"]
-  gcp_compute_subnetwork_name          = format("%s-%s-sn-inside-%s", var.project_prefix, var.project_name, var.project_suffix)
+  gcp_compute_subnetwork_name          = format("%s-sn-inside", var.site_name)
   gcp_compute_subnetwork_ip_cidr_range = var.inside_subnet_cidr_block
 }
 
@@ -27,7 +27,7 @@ module "workload" {
   source                                  = "../modules/gcp/compute"
   gcp_zone_name                           = var.gcp_az_name
   gcp_compute_instance_target_tags        = ["ssh", "http"]
-  gcp_compute_instance_machine_name       = format("%s-%s-gcp-compute-%s", var.project_prefix, var.project_name, var.project_suffix)
+  gcp_compute_instance_machine_name       = format("%s-gcp-compute", var.site_name)
   gcp_compute_instance_machine_type       = "n1-standard-1"
   gcp_compute_instance_network_interfaces = [
     {
@@ -44,7 +44,7 @@ module "workload" {
 module "gcp_compute_firewall_internal" {
   source                       = "../modules/gcp/firewall"
   gcp_project_name             = var.gcp_project_id
-  gcp_compute_firewall_name    = format("%s-%s-%s-fw-internal-%s", var.project_prefix, var.project_name, module.workload.gcp_compute["name"], var.project_suffix)
+  gcp_compute_firewall_name    = format("%s-%s-fw-internal", var.site_name, module.workload.gcp_compute["name"])
   compute_firewall_allow_rules = [
     {
       protocol = "icmp"
@@ -68,7 +68,7 @@ module "gcp_compute_firewall_internal" {
 module "gcp_compute_firewall_http" {
   source                       = "../modules/gcp/firewall"
   gcp_project_name             = var.gcp_project_id
-  gcp_compute_firewall_name    = format("%s-%s-%s-fw-http-%s", var.project_prefix, var.project_name, module.workload.gcp_compute["name"], var.project_suffix)
+  gcp_compute_firewall_name    = format("%s-%s-fw-http", var.site_name, module.workload.gcp_compute["name"])
   compute_firewall_allow_rules = [
     {
       protocol = "tcp"
@@ -83,7 +83,7 @@ module "gcp_compute_firewall_http" {
 module "gcp_compute_firewall_ssh" {
   source                       = "../modules/gcp/firewall"
   gcp_project_name             = var.gcp_project_id
-  gcp_compute_firewall_name    = format("%s-%s-%s-fw-allow-bastion-%s", var.project_prefix, var.project_name, module.workload.gcp_compute["name"], var.project_suffix)
+  gcp_compute_firewall_name    = format("%s-%s-fw-allow-bastion", var.site_name, module.workload.gcp_compute["name"])
   compute_firewall_allow_rules = [
     {
       protocol = "tcp"
@@ -97,7 +97,7 @@ module "gcp_compute_firewall_ssh" {
 
 resource "google_compute_route" "vip" {
   depends_on             = [module.site]
-  name                   = format("%s-%s-network-route-%s", var.project_prefix, var.project_name, var.project_suffix)
+  name                   = format("%s-%s-network-route-%s", var.site_name)
   dest_range             = var.allow_cidr_blocks[0]
   network                = module.gcp_network.vpc_network["name"]
   # next_hop_instance      = regex(local.pattern, module.site.gcp_vpc["params"])

@@ -67,7 +67,7 @@ module "site_wait_for_online" {
   f5xc_api_token = var.f5xc_api_token
 }
 
-/*module "azure_security_group_workload" {
+module "azure_security_group_workload" {
   source                       = "../modules/azure/security_group"
   azure_region                 = var.azure_region
   azure_resource_group_name    = module.resource_group.resource_group["name"]
@@ -124,4 +124,4 @@ module "workload" {
   azure_linux_virtual_machine_admin_username = "ubuntu"
   public_ssh_key                             = var.ssh_public_key_file
   custom_tags                                = var.custom_tags
-}*/
+}
