@@ -143,7 +143,3 @@ variable "ssh_private_key_file" {
 variable "gcp_application_credentials" {
   type = string
 }
-
-variable "gcp_project_id" {
-  type = string
-}
