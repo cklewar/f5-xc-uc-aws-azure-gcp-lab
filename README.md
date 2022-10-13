@@ -140,12 +140,12 @@ Access to workload instances via tailscale:
 
 ```bash
 $ tailscale status|grep lab
-100.66.170.187  lab-aws-2a-workload mwiget@      linux   -
-100.119.43.182  lab-aws-2b-workload mwiget@      linux   -
-100.80.104.134  lab-azure-1a-workload mwiget@    linux   -
-100.94.28.162   lab-azure-1b-workload mwiget@    linux   -
-100.125.121.151 lab-gcp-3a-workload mwiget@      linux   -
-100.78.134.207  lab-gcp-3b-workload mwiget@      linux   -
+100.66.170.187  lab-aws-2a-workload user@      linux   -
+100.119.43.182  lab-aws-2b-workload user@      linux   -
+100.80.104.134  lab-azure-1a-workload user@    linux   -
+100.94.28.162   lab-azure-1b-workload user@    linux   -
+100.125.121.151 lab-gcp-3a-workload user@      linux   -
+100.78.134.207  lab-gcp-3b-workload user@      linux   -
 ```
 
 ```bash
