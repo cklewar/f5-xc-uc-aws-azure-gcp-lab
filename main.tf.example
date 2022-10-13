@@ -57,7 +57,6 @@ module "azure-site-1a" {
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
   providers = {
-    aws      = aws.us_west_1
     volterra = volterra.default
   }
 }
@@ -90,7 +89,6 @@ module "azure-site-1b" {
     site_mesh_group = module.smg.site-mesh-group["name"]
   }
   providers = {
-    aws      = aws.us_west_1
     volterra = volterra.default
   }
 }
