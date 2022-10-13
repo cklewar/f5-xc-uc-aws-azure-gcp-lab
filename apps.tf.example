@@ -10,9 +10,9 @@ module "apps_azure_site1" {
   project_suffix                  = var.project_suffix
   f5xc_namespace                  = module.namespace.namespace["name"]
   advertise_port                  = 80
-  f5xc_origin_pool_origin_servers = [
-    {
-      private_ip = {
+  f5xc_origin_pool_origin_servers = {
+    private_ip = [
+      {
         ip              = one(module.azure-site-1a[*].workload.private_ip)
         inside_network  = true
         outside_network = false
@@ -23,10 +23,8 @@ module "apps_azure_site1" {
             tenant    = var.f5xc_tenant
           }
         }
-      }
-    },
-    {
-      private_ip = {
+      },
+      {
         ip              = one(module.azure-site-1b[*].workload.private_ip)
         inside_network  = true
         outside_network = false
@@ -38,8 +36,8 @@ module "apps_azure_site1" {
           }
         }
       }
-    }
-  ]
+    ]
+  }
   advertise_vip   = "10.64.15.254"
   advertise_sites = local.advertise_sites
   providers       = {
@@ -60,9 +58,9 @@ module "apps_aws_site1" {
   project_suffix                  = var.project_suffix
   advertise_port                  = 80
   f5xc_namespace                  = module.namespace.namespace["name"]
-  f5xc_origin_pool_origin_servers = [
-    {
-      "private_ip" = {
+  f5xc_origin_pool_origin_servers = {
+    "private_ip" = [
+      {
         ip              = one(module.aws-site-1a[*].workload["private_ip"])
         inside_network  = true
         outside_network = false
@@ -74,7 +72,7 @@ module "apps_aws_site1" {
           }
         }
       },
-      "private_ip" = {
+      {
         ip              = one(module.aws-site-1b[*].workload["private_ip"])
         inside_network  = true
         outside_network = false
@@ -86,8 +84,8 @@ module "apps_aws_site1" {
           }
         }
       }
-    }
-  ]
+    ]
+  }
   advertise_vip   = "10.64.15.254"
   advertise_sites = local.advertise_sites
   providers       = {
@@ -107,9 +105,9 @@ module "apps_gcp_site1" {
   project_suffix                  = var.project_suffix
   f5xc_namespace                  = module.namespace.namespace["name"]
   advertise_port                  = 80
-  f5xc_origin_pool_origin_servers = [
-    {
-      "private_ip" : {
+  f5xc_origin_pool_origin_servers = {
+    "private_ip" : [
+      {
         ip              = one(module.gcp-site-1a[*].workload.private_ip)
         inside_network  = true
         outside_network = false
@@ -121,7 +119,7 @@ module "apps_gcp_site1" {
           }
         }
       },
-      "private_ip" : {
+      {
         ip              = one(module.gcp-site-1b[*].workload.private_ip)
         inside_network  = true
         outside_network = false
@@ -133,8 +131,8 @@ module "apps_gcp_site1" {
           }
         }
       }
-    }
-  ]
+    ]
+  }
   advertise_vip   = "10.64.15.254"
   advertise_sites = local.advertise_sites
   providers       = {
