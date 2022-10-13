@@ -38,7 +38,7 @@ module "workload" {
   gcp_compute_instance_labels = {
     webserver = "true"
   }
-  public_ssh_key = file(var.ssh_public_key_file)
+  public_ssh_key = var.ssh_public_key_file
 }
 
 module "gcp_compute_firewall_internal" {
@@ -100,7 +100,8 @@ resource "google_compute_route" "vip" {
   name                   = format("%s-%s-network-route-%s", var.project_prefix, var.project_name, var.project_suffix)
   dest_range             = var.allow_cidr_blocks[0]
   network                = module.gcp_network.vpc_network["name"]
-  next_hop_instance      = regex(format("%s-%s-gcp-\\w+-\\w+", var.project_prefix, var.project_name), module.site.gcp_vpc["params"])
+  # next_hop_instance      = regex(local.pattern, module.site.gcp_vpc["params"])
+  next_hop_instance      = ""
   next_hop_instance_zone = var.gcp_az_name
   priority               = 100
 }
@@ -121,7 +122,7 @@ module "site" {
   f5xc_gcp_default_ce_sw_version    = true
   f5xc_gcp_default_ce_os_version    = true
   f5xc_gcp_default_blocked_services = true
-  public_ssh_key                    = file(var.ssh_public_key_file)
+  public_ssh_key                    = var.ssh_public_key_file
   custom_tags                       = var.custom_tags
 }
 
@@ -133,17 +134,4 @@ module "site_wait_for_online" {
   f5xc_tenant    = var.f5xc_tenant
   f5xc_api_url   = var.f5xc_api_url
   f5xc_api_token = var.f5xc_api_token
-}
-
-output "site" {
-  value = {
-    name = module.site.gcp_vpc["name"]
-  }
-}
-
-output "workload" {
-  value = {
-    "public_ip"  = module.workload.gcp_compute["nat_ip"]
-    "private_ip" = module.workload.gcp_compute["network_ip"]
-  }
 }

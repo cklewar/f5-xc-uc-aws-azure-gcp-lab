@@ -58,7 +58,7 @@ module "azure-site-1a" {
   project_name        = var.project_name
   project_prefix      = var.project_prefix
   project_suffix      = var.project_suffix
-  ssh_public_key_file = file(var.ssh_public_key_file)
+  ssh_public_key_file = var.ssh_public_key_file
   custom_tags         = {
     Name            = local.aws-site-1a
     Owner           = var.owner_tag
@@ -91,7 +91,7 @@ module "azure-site-1b" {
   project_name        = var.project_name
   project_prefix      = var.project_prefix
   project_suffix      = var.project_suffix
-  ssh_public_key_file = file(var.ssh_public_key_file)
+  ssh_public_key_file = var.ssh_public_key_file
   custom_tags         = {
     Name            = local.aws-site-1a
     Owner           = var.owner_tag
@@ -125,8 +125,8 @@ module "aws-site-1a" {
   project_name         = var.project_name
   project_prefix       = var.project_prefix
   project_suffix       = var.project_suffix
-  ssh_public_key_file  = file(var.ssh_public_key_file)
-  ssh_private_key_file = file(var.ssh_private_key_file)
+  ssh_public_key_file  = var.ssh_public_key_file
+  ssh_private_key_file = var.ssh_private_key_file
   custom_tags          = {
     Name            = local.aws-site-1a
     Owner           = var.owner_tag
@@ -161,8 +161,8 @@ module "aws-site-1b" {
   project_name         = var.project_name
   project_prefix       = var.project_prefix
   project_suffix       = var.project_suffix
-  ssh_public_key_file  = file(var.ssh_public_key_file)
-  ssh_private_key_file = file(var.ssh_private_key_file)
+  ssh_public_key_file  = var.ssh_public_key_file
+  ssh_private_key_file = var.ssh_private_key_file
   custom_tags          = {
     Name            = local.aws-site-1a
     Owner           = var.owner_tag
@@ -193,7 +193,7 @@ module "gcp-site-1a" {
   f5xc_api_url        = var.f5xc_api_url
   f5xc_api_token      = var.f5xc_api_token
   f5xc_gcp_cred       = var.f5xc_gcp_cred
-  ssh_public_key_file = file(var.ssh_public_key_file)
+  ssh_public_key_file = var.ssh_public_key_file
   custom_tags         = {
     Name            = local.aws-site-1a
     Owner           = var.owner_tag
@@ -203,7 +203,6 @@ module "gcp-site-1a" {
     google   = google.europe_west6
     volterra = volterra.default
   }
-
 }
 
 module "gcp-site-1b" {
@@ -225,7 +224,7 @@ module "gcp-site-1b" {
   f5xc_api_url        = var.f5xc_api_url
   f5xc_api_token      = var.f5xc_api_token
   f5xc_gcp_cred       = var.f5xc_gcp_cred
-  ssh_public_key_file = file(var.ssh_public_key_file)
+  ssh_public_key_file = var.ssh_public_key_file
   custom_tags         = {
     Name            = local.aws-site-1a
     Owner           = var.owner_tag

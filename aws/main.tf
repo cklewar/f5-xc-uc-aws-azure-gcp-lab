@@ -29,6 +29,9 @@ module "subnet" {
 
 module "workload" {
   source                        = "../modules/aws/ec2"
+  aws_region                        = var.aws_region
+  aws_vpc_id                        = module.vpc.aws_vpc["id"]
+  aws_az_name                       = var.aws_az_name
   aws_ec2_instance_name         = format("%s-%s-ec2-%s", var.project_prefix, var.project_name, var.project_suffix)
   aws_ec2_instance_type         = "t3.micro"
   aws_ec2_public_interface_ips  = ["172.16.192.10"]
@@ -40,17 +43,14 @@ module "workload" {
     ]
     template_data = var.instance_template_data
   }
-  aws_ec2_instance_script_template  = var.aws_ec2_instance_script_template_file_name
-  aws_ec2_instance_script_file      = var.aws_ec2_instance_script_file_name
-  aws_subnet_private_id             = module.subnet.aws_subnets[format("%s-aws-ec2-test-private-subnet-%s", var.project_prefix, var.project_suffix)]["id"]
-  aws_subnet_public_id              = module.subnet.aws_subnets[format("%s-aws-ec2-test-public-subnet-%s", var.project_prefix, var.project_suffix)]["id"]
-  aws_az_name                       = var.aws_az_name
-  aws_region                        = var.aws_region
-  ssh_private_key_file              = var.ssh_private_key_file
+  aws_subnet_private_id             = module.subnet.aws_subnets[format("%s-%s-sn-workload-%s", var.project_prefix, var.project_name, var.project_suffix)]["id"]
+  aws_subnet_public_id              = module.subnet.aws_subnets[format("%s-%s-sn-outside-%s", var.project_prefix, var.project_name, var.project_suffix)]["id"]
   ssh_public_key_file               = var.ssh_public_key_file
-  aws_vpc_id                        = module.vpc.aws_vpc["id"]
-  template_output_dir_path          = local.template_output_dir_path
+  ssh_private_key_file              = var.ssh_private_key_file
   template_input_dir_path           = local.template_input_dir_path
+  template_output_dir_path          = local.template_output_dir_path
+  aws_ec2_instance_script_file      = var.aws_ec2_instance_script_file_name
+  aws_ec2_instance_script_template  = var.aws_ec2_instance_script_template_file_name
   aws_ec2_instance_custom_data_dirs = [
     {
       name        = "instance_script"
@@ -86,7 +86,7 @@ module "site" {
   f5xc_aws_vpc_use_http_https_port     = true
   f5xc_aws_vpc_inside_static_routes    = [var.workload_subnet_cidr_block]
   f5xc_aws_vpc_use_http_https_port_sli = true
-  public_ssh_key                       = file(var.ssh_public_key_file)
+  public_ssh_key                       = var.ssh_public_key_file
   custom_tags                          = var.custom_tags
 }
 

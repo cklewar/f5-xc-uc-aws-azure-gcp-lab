@@ -50,7 +50,7 @@ module "site" {
       f5xc_azure_vnet_inside_subnet  = module.inside_subnet.subnet["name"]
     }
   }
-  public_ssh_key = file(var.ssh_public_key_file)
+  public_ssh_key = var.ssh_public_key_file
   custom_tags    = var.custom_tags
 }
 
@@ -79,7 +79,7 @@ module "azure_security_group_workload" {
       protocol                   = "*"
       source_port_range          = "*"
       destination_port_range     = "*"
-      source_address_prefix      = ["0.0.0.0/0"]
+      source_address_prefix      = "0.0.0.0/0"
       destination_address_prefix = "*"
     }
   ]
@@ -117,8 +117,8 @@ module "workload" {
   azure_virtual_machine_size                 = "Standard_DS1_v2"
   azure_virtual_machine_name                 = format("%s-%s-%s", var.project_prefix, var.project_name, var.project_suffix)
   azure_network_interface_name               = format("%s-%s-int-%s", var.project_prefix, var.project_name, var.project_suffix)
-  azure_linux_virtual_machine_custom_data    = templatefile(format("%s%s", local.template_input_dir_path, var.azure_instance_script_template_file_name), var.instance_template_data)
+  azure_linux_virtual_machine_custom_data    = templatefile(format("%s/%s", local.template_input_dir_path, var.azure_instance_script_template_file_name), var.instance_template_data)
   azure_linux_virtual_machine_admin_username = "ubuntu"
-  public_ssh_key                             = file(var.ssh_public_key_file)
+  public_ssh_key                             = var.ssh_public_key_file
   custom_tags                                = var.custom_tags
 }

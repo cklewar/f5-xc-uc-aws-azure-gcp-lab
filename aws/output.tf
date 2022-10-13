@@ -3,7 +3,7 @@ output "aws_vpc_id" {
 }
 
 output "aws_subnet_id" {
-  value = module.subnet.aws_subnets.*["id"]
+  value = module.subnet.aws_subnets[*]
 }
 
 output "workload" {

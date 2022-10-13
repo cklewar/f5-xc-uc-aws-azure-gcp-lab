@@ -8,10 +8,10 @@ provider "volterra" {
 }
 
 provider "azurerm" {
-  subscription_id = var.azure_subscription_id != "" ? "" : var.azure_subscription_id
-  client_id       = var.azure_client_id != "" ? "" : var.azure_client_id
-  client_secret   = var.azure_client_secret != "" ? "" : var.azure_client_secret
-  tenant_id       = var.azure_tenant_id != "" ? "" : var.azure_tenant_id
+  subscription_id = var.azure_subscription_id
+  client_id       = var.azure_client_id
+  client_secret   = var.azure_client_secret
+  tenant_id       = var.azure_tenant_id
   features {}
 }
 
@@ -33,6 +33,6 @@ provider "aws" {
 provider "google" {
   alias       = "europe_west6"
   region      = "europe-west6"
-  project     = var.gcp_project_id
+  project     = var.f5xc_gcp_project_id
   credentials = var.gcp_application_credentials
 }

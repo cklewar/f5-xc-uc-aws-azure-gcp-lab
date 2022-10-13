@@ -1,4 +1,4 @@
-module "apps_site1" {
+module "apps_azure_site1" {
   # depends_on     = [module.azure-site-1a, module.azure-site-1b]
   count                           = 1
   source                          = "./apps"
@@ -48,7 +48,7 @@ module "apps_site1" {
 
 }
 
-module "apps_site2" {
+module "apps_aws_site1" {
   # depends_on     = [module.aws-site-2a, module.aws-site-2b]
   count                           = 1
   source                          = "./apps"
@@ -95,7 +95,7 @@ module "apps_site2" {
   }
 }
 
-module "apps_site3" {
+module "apps_gcp_site1" {
   # depends_on     = [module.gcp-site-1a, module.gcp-site-1b]
   count                           = 1
   source                          = "./apps"
@@ -116,7 +116,7 @@ module "apps_site3" {
         site_locator    = {
           site = {
             namespace = var.f5xc_namespace
-            name      = module.gcp-site-1a.*.site["name"]
+            name      = one(module.gcp-site-1a[*].site["name"])
             tenant    = var.f5xc_tenant
           }
         }
@@ -128,7 +128,7 @@ module "apps_site3" {
         site_locator    = {
           site = {
             namespace = var.f5xc_namespace
-            name      = local.gcp-site-1b
+            name      = one(module.gcp-site-1b[*].site["name"])
             tenant    = var.f5xc_tenant
           }
         }
