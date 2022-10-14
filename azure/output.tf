@@ -3,16 +3,13 @@ output "workload" {
 }
 
 output "sli_ip" {
-  depends_on = [module.site_wait_for_online]
-  value      = module.site.vnet["sli"]
+  value = module.site.vnet["sli_ip"]
 }
 
 output "slo_ip" {
-  depends_on = [module.site_wait_for_online]
-  value      = module.site.vnet["slo"]
+  value = module.site.vnet["slo_ip"]
 }
 
 output "public_ip" {
-  depends_on = [module.site_wait_for_online]
-  value      = module.site.vnet["public_ip"]
+  value = module.site.vnet["public_ip"]
 }

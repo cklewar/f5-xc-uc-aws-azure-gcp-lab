@@ -95,43 +95,39 @@ module "gcp_compute_firewall_ssh" {
   gcp_compute_firewall_compute_network = module.gcp_network.vpc_network["name"]
 }
 
-resource "google_compute_route" "vip" {
+module "site" {
+  source                                = "../modules/f5xc/site/gcp"
+  f5xc_tenant                           = var.f5xc_tenant
+  f5xc_api_url                          = var.f5xc_api_url
+  f5xc_gcp_cred                         = var.f5xc_gcp_cred
+  f5xc_namespace                        = "system"
+  f5xc_api_token                        = var.f5xc_api_token
+  f5xc_gcp_region                       = var.gcp_region
+  f5xc_gcp_site_name                    = var.site_name
+  f5xc_gcp_zone_names                   = [var.gcp_az_name]
+  f5xc_gcp_ce_gw_type                   = "multi_nic"
+  f5xc_gcp_node_number                  = 1
+  f5xc_gcp_inside_subnet_name           = module.gcp_subnetwork_inside.subnetwork["name"]
+  f5xc_gcp_outside_primary_ipv4         = var.outside_subnet_cidr_block
+  f5xc_gcp_outside_network_name         = format("%s-outside-net", var.site_name)
+  f5xc_gcp_outside_subnet_name          = format("%s-outside-snet", var.site_name)
+  f5xc_gcp_default_ce_sw_version        = true
+  f5xc_gcp_default_ce_os_version        = true
+  f5xc_gcp_default_blocked_services     = true
+  f5xc_gcp_existing_inside_network_name = module.gcp_network.vpc_network["name"]
+  public_ssh_key                        = var.ssh_public_key_file
+  custom_tags                           = var.custom_tags
+
+}
+
+/*resource "google_compute_route" "vip" {
   depends_on             = [module.site]
-  name                   = format("%s-%s-network-route-%s", var.site_name)
+  name                   = format("%s-compute-route-vip", var.site_name)
   dest_range             = var.allow_cidr_blocks[0]
   network                = module.gcp_network.vpc_network["name"]
   # next_hop_instance      = regex(local.pattern, module.site.gcp_vpc["params"])
   next_hop_instance      = ""
   next_hop_instance_zone = var.gcp_az_name
   priority               = 100
-}
+}*/
 
-module "site" {
-  source                            = "../modules/f5xc/site/gcp"
-  f5xc_tenant                       = var.f5xc_tenant
-  f5xc_gcp_cred                     = var.f5xc_gcp_cred
-  f5xc_namespace                    = "system"
-  f5xc_gcp_region                   = var.gcp_region
-  f5xc_gcp_site_name                = var.site_name
-  f5xc_gcp_zone_names               = [var.gcp_az_name]
-  f5xc_gcp_ce_gw_type               = "multi_nic"
-  f5xc_gcp_node_number              = 1
-  f5xc_gcp_inside_subnet_name       = module.gcp_subnetwork_inside.subnetwork["name"]
-  f5xc_gcp_inside_network_name      = module.gcp_network.vpc_network["name"]
-  f5xc_gcp_outside_primary_ipv4     = var.outside_subnet_cidr_block
-  f5xc_gcp_default_ce_sw_version    = true
-  f5xc_gcp_default_ce_os_version    = true
-  f5xc_gcp_default_blocked_services = true
-  public_ssh_key                    = var.ssh_public_key_file
-  custom_tags                       = var.custom_tags
-}
-
-module "site_wait_for_online" {
-  depends_on     = [module.site]
-  source         = "../modules/f5xc/status/site"
-  f5xc_namespace = "system"
-  f5xc_site_name = var.site_name
-  f5xc_tenant    = var.f5xc_tenant
-  f5xc_api_url   = var.f5xc_api_url
-  f5xc_api_token = var.f5xc_api_token
-}

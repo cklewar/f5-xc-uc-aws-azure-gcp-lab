@@ -30,6 +30,8 @@ module "inside_subnet" {
 
 module "site" {
   source                                  = "../modules/f5xc/site/azure"
+  f5xc_api_url                            = var.f5xc_api_url
+  f5xc_api_token                          = var.f5xc_api_token
   f5xc_namespace                          = "system"
   f5xc_tenant                             = var.f5xc_tenant
   f5xc_azure_cred                         = var.f5xc_azure_cred
@@ -55,16 +57,6 @@ module "site" {
   f5xc_azure_total_worker_nodes       = 0
   public_ssh_key                      = var.ssh_public_key_file
   custom_tags                         = var.custom_tags
-}
-
-module "site_wait_for_online" {
-  depends_on     = [module.site]
-  source         = "../modules/f5xc/status/site"
-  f5xc_namespace = "system"
-  f5xc_site_name = var.site_name
-  f5xc_tenant    = var.f5xc_tenant
-  f5xc_api_url   = var.f5xc_api_url
-  f5xc_api_token = var.f5xc_api_token
 }
 
 module "azure_security_group_workload" {
@@ -96,13 +88,13 @@ resource "azurerm_route_table" "vip" {
 }
 
 resource "azurerm_route" "vip" {
-  depends_on             = [module.site_wait_for_online]
+  depends_on             = [module.site.vnet]
   name                   = format("%s-acceptVIP", var.site_name)
   next_hop_type          = "VirtualAppliance"
   address_prefix         = var.allow_cidr_blocks[0]
   route_table_name       = azurerm_route_table.vip.name
   resource_group_name    = module.resource_group.resource_group["name"]
-  next_hop_in_ip_address = module.site.vnet["sli"]
+  next_hop_in_ip_address = module.site.vnet["sli_ip"]
 }
 
 resource "azurerm_subnet_route_table_association" "vip" {
