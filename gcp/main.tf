@@ -116,8 +116,6 @@ module "site" {
   f5xc_gcp_default_blocked_services     = true
   f5xc_gcp_existing_inside_network_name = module.gcp_network.vpc_network["name"]
   public_ssh_key                        = var.ssh_public_key_file
-  custom_tags                           = var.custom_tags
-
 }
 
 /*resource "google_compute_route" "vip" {
@@ -130,4 +128,3 @@ module "site" {
   next_hop_instance_zone = var.gcp_az_name
   priority               = 100
 }*/
-
