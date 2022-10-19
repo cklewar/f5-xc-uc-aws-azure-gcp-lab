@@ -27,13 +27,43 @@ module "subnet" {
   custom_tags = var.custom_tags
 }
 
+module "site" {
+  source                   = "../modules/f5xc/site/aws/vpc"
+  f5xc_api_token           = var.f5xc_api_token
+  f5xc_api_url             = var.f5xc_api_url
+  f5xc_tenant              = var.f5xc_tenant
+  f5xc_aws_cred            = var.f5xc_aws_cred
+  f5xc_namespace           = "system"
+  f5xc_aws_region          = var.aws_region
+  f5xc_aws_ce_gw_type      = "multi_nic"
+  f5xc_aws_vpc_name_tag    = var.site_name
+  f5xc_aws_vpc_site_name   = var.site_name
+  f5xc_aws_vpc_existing_id = module.vpc.aws_vpc["id"]
+  f5xc_aws_vpc_az_nodes    = {
+    node0 : {
+      f5xc_aws_vpc_outside_existing_subnet_id  = module.subnet.aws_subnets[format("%s-sn-outside", var.site_name)]["id"],
+      f5xc_aws_vpc_inside_existing_subnet_id   = module.subnet.aws_subnets[format("%s-sn-inside", var.site_name)]["id"],
+      f5xc_aws_vpc_workload_existing_subnet_id = module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"],
+      f5xc_aws_vpc_az_name                     = var.aws_az_name
+    }
+  }
+  f5xc_aws_vpc_no_worker_nodes         = true
+  f5xc_aws_default_ce_os_version       = true
+  f5xc_aws_default_ce_sw_version       = true
+  f5xc_aws_vpc_use_http_https_port     = true
+  f5xc_aws_vpc_inside_static_routes    = [var.workload_subnet_cidr_block]
+  f5xc_aws_vpc_use_http_https_port_sli = true
+  public_ssh_key                       = var.ssh_public_key_file
+  custom_tags                          = var.custom_tags
+}
+
 resource "aws_internet_gateway" "igw" {
-  vpc_id   = module.vpc.aws_vpc["id"]
-  tags     = var.custom_tags
+  vpc_id = module.vpc.aws_vpc["id"]
+  tags   = var.custom_tags
 }
 
 resource "aws_route_table" "rt" {
-  vpc_id   = module.vpc.aws_vpc["id"]
+  vpc_id = module.vpc.aws_vpc["id"]
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
@@ -41,11 +71,11 @@ resource "aws_route_table" "rt" {
   tags = var.custom_tags
 }
 
-resource "aws_route_table_association" "subnet" {
-  for_each       = module.subnet.aws_subnets
-  subnet_id      = each.value.id
-  route_table_id = aws_route_table.rt.id
-}
+#resource "aws_route_table_association" "subnet" {
+#  for_each       = module.subnet.aws_subnets
+#  subnet_id      = each.value.id
+#  route_table_id = aws_route_table.rt.id
+#}
 
 module "aws_security_group_public" {
   source                     = "../modules/aws/security_group"
@@ -84,6 +114,7 @@ module "aws_network_interface_public" {
 }
 
 module "workload" {
+  depends_on = [module.site]
   source                  = "../modules/aws/ec2"
   aws_ec2_instance_name   = format("%s-ec2-workload", var.site_name)
   aws_ec2_instance_type   = "t3.micro"
@@ -116,34 +147,4 @@ module "workload" {
     }
   ]
   custom_tags = var.custom_tags
-}
-
-module "site" {
-  source                   = "../modules/f5xc/site/aws/vpc"
-  f5xc_api_token           = var.f5xc_api_token
-  f5xc_api_url             = var.f5xc_api_url
-  f5xc_tenant              = var.f5xc_tenant
-  f5xc_aws_cred            = var.f5xc_aws_cred
-  f5xc_namespace           = "system"
-  f5xc_aws_region          = var.aws_region
-  f5xc_aws_ce_gw_type      = "multi_nic"
-  f5xc_aws_vpc_name_tag    = var.site_name
-  f5xc_aws_vpc_site_name   = var.site_name
-  f5xc_aws_vpc_existing_id = module.vpc.aws_vpc["id"]
-  f5xc_aws_vpc_az_nodes    = {
-    node0 : {
-      f5xc_aws_vpc_outside_existing_subnet_id  = module.subnet.aws_subnets[format("%s-sn-outside", var.site_name)]["id"],
-      f5xc_aws_vpc_inside_existing_subnet_id   = module.subnet.aws_subnets[format("%s-sn-inside", var.site_name)]["id"],
-      f5xc_aws_vpc_workload_existing_subnet_id = module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"],
-      f5xc_aws_vpc_az_name                     = var.aws_az_name
-    }
-  }
-  f5xc_aws_vpc_no_worker_nodes         = true
-  f5xc_aws_default_ce_os_version       = true
-  f5xc_aws_default_ce_sw_version       = true
-  f5xc_aws_vpc_use_http_https_port     = true
-  f5xc_aws_vpc_inside_static_routes    = [var.workload_subnet_cidr_block]
-  f5xc_aws_vpc_use_http_https_port_sli = true
-  public_ssh_key                       = var.ssh_public_key_file
-  custom_tags                          = var.custom_tags
 }

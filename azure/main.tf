@@ -2,6 +2,7 @@ module "resource_group" {
   source                    = "../modules/azure/resource_group"
   azure_region              = var.azure_region
   azure_resource_group_name = format("%s-rg", var.site_name)
+  custom_tags               = var.custom_tags
 }
 
 module "vnet" {
@@ -10,6 +11,7 @@ module "vnet" {
   azure_vnet_primary_ipv4        = var.vnet_cidr_block
   azure_vnet_resource_group_name = module.resource_group.resource_group["name"]
   azure_region                   = module.resource_group.resource_group["location"]
+  custom_tags                    = var.custom_tags
 }
 
 module "outside_subnet" {
@@ -85,6 +87,7 @@ resource "azurerm_route_table" "vip" {
   name                = format("%s-vip", var.site_name)
   location            = module.resource_group.resource_group["location"]
   resource_group_name = module.resource_group.resource_group["name"]
+  tags                = var.custom_tags
 }
 
 resource "azurerm_route" "vip" {
