@@ -55,6 +55,10 @@ variable "site_name" {
   type = string
 }
 
+variable "owner" {
+  type = string
+}
+
 variable "custom_tags" {
   description = "Custom tags to set on resources"
   type        = map(string)

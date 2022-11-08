@@ -57,7 +57,7 @@ module "site" {
   f5xc_azure_default_ce_os_version    = true
   f5xc_azure_no_worker_nodes          = true
   f5xc_azure_total_worker_nodes       = 0
-  public_ssh_key                      = var.ssh_public_key_file
+  ssh_public_key                     = var.ssh_public_key_file
   custom_tags                         = var.custom_tags
 }
 
@@ -117,6 +117,6 @@ module "workload" {
   azure_network_interface_name               = format("%s-iface", var.site_name)
   azure_linux_virtual_machine_custom_data    = templatefile(format("%s/%s", local.template_input_dir_path, var.azure_instance_script_template_file_name), var.instance_template_data)
   azure_linux_virtual_machine_admin_username = "ubuntu"
-  public_ssh_key                             = var.ssh_public_key_file
+  ssh_public_key                            = var.ssh_public_key_file
   custom_tags                                = var.custom_tags
 }

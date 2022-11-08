@@ -3,8 +3,9 @@ module "vpc" {
   aws_region         = var.aws_region
   aws_az_name        = var.aws_az_name
   aws_vpc_name       = format("%s-vpc", var.site_name)
+  aws_owner          = var.owner
   aws_vpc_cidr_block = var.vpc_cidr_block
-  custom_tags        = var.custom_tags
+  custom_tags        = merge({ "ves-io-site-name" : format("%s-vpc", var.site_name), "ves-io-creator-id" : var.owner }, var.custom_tags)
 }
 
 module "subnet" {
@@ -12,19 +13,30 @@ module "subnet" {
   aws_vpc_id      = module.vpc.aws_vpc["id"]
   aws_vpc_subnets = [
     {
-      cidr_block              = var.outside_subnet_cidr_block, availability_zone = var.aws_az_name,
-      map_public_ip_on_launch = "true", custom_tags = { "Name" = format("%s-sn-outside", var.site_name) }
+      name                    = format("%s-sn-outside", var.site_name)
+      owner                   = var.owner
+      cidr_block              = var.outside_subnet_cidr_block,
+      availability_zone       = var.aws_az_name,
+      map_public_ip_on_launch = "true",
+      custom_tags             = var.custom_tags
     },
     {
-      cidr_block              = var.inside_subnet_cidr_block, availability_zone = var.aws_az_name,
-      map_public_ip_on_launch = "false", custom_tags = { "Name" = format("%s-sn-inside", var.site_name) }
+      name                    = format("%s-sn-inside", var.site_name)
+      owner                   = var.owner
+      cidr_block              = var.inside_subnet_cidr_block,
+      availability_zone       = var.aws_az_name,
+      map_public_ip_on_launch = "false",
+      custom_tags             = var.custom_tags
     },
     {
-      cidr_block              = var.workload_subnet_cidr_block, availability_zone = var.aws_az_name,
-      map_public_ip_on_launch = "true", custom_tags = { "Name" = format("%s-sn-workload", var.site_name) }
+      name                    = format("%s-sn-workload", var.site_name)
+      owner                   = var.owner
+      cidr_block              = var.workload_subnet_cidr_block,
+      availability_zone       = var.aws_az_name,
+      map_public_ip_on_launch = "true",
+      custom_tags             = var.custom_tags
     }
   ]
-  custom_tags = var.custom_tags
 }
 
 module "site" {
@@ -36,7 +48,7 @@ module "site" {
   f5xc_namespace           = "system"
   f5xc_aws_region          = var.aws_region
   f5xc_aws_ce_gw_type      = "multi_nic"
-  f5xc_aws_vpc_name_tag    = var.site_name
+  f5xc_aws_vpc_owner       = var.owner
   f5xc_aws_vpc_site_name   = var.site_name
   f5xc_aws_vpc_existing_id = module.vpc.aws_vpc["id"]
   f5xc_aws_vpc_az_nodes    = {
@@ -53,11 +65,11 @@ module "site" {
   f5xc_aws_vpc_use_http_https_port     = true
   f5xc_aws_vpc_inside_static_routes    = [var.workload_subnet_cidr_block]
   f5xc_aws_vpc_use_http_https_port_sli = true
-  public_ssh_key                       = var.ssh_public_key_file
+  ssh_public_key                       = var.ssh_public_key_file
   custom_tags                          = var.custom_tags
 }
 
-resource "aws_internet_gateway" "igw" {
+/*resource "aws_internet_gateway" "igw" {
   vpc_id = module.vpc.aws_vpc["id"]
   tags   = var.custom_tags
 }
@@ -69,7 +81,7 @@ resource "aws_route_table" "rt" {
     gateway_id = aws_internet_gateway.igw.id
   }
   tags = var.custom_tags
-}
+}*/
 
 #resource "aws_route_table_association" "subnet" {
 #  for_each       = module.subnet.aws_subnets
@@ -81,6 +93,7 @@ module "aws_security_group_public" {
   source                     = "../modules/aws/security_group"
   aws_security_group_name    = format("%s-public-sg", var.site_name)
   aws_vpc_id                 = module.vpc.aws_vpc["id"]
+  custom_tags                = var.custom_tags
   security_group_rule_egress = [
     {
       from_port   = 0
@@ -105,16 +118,17 @@ module "aws_security_group_public" {
   ]
 }
 
-module "aws_network_interface_public" {
+/*module "aws_network_interface_public" {
   source                        = "../modules/aws/network_interface"
   aws_interface_create_eip      = true
   aws_interface_private_ips     = ["10.64.18.10"]
   aws_interface_security_groups = [module.aws_security_group_public.aws_security_group["id"]]
   aws_interface_subnet_id       = module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"]
+  custom_tags                   = var.custom_tags
 }
 
 module "workload" {
-  depends_on = [module.site]
+  depends_on              = [module.site]
   source                  = "../modules/aws/ec2"
   aws_ec2_instance_name   = format("%s-ec2-workload", var.site_name)
   aws_ec2_instance_type   = "t3.micro"
@@ -147,4 +161,4 @@ module "workload" {
     }
   ]
   custom_tags = var.custom_tags
-}
+}*/
