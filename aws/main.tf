@@ -69,7 +69,7 @@ module "site" {
   custom_tags                          = var.custom_tags
 }
 
-/*resource "aws_internet_gateway" "igw" {
+resource "aws_internet_gateway" "igw" {
   vpc_id = module.vpc.aws_vpc["id"]
   tags   = var.custom_tags
 }
@@ -81,13 +81,13 @@ resource "aws_route_table" "rt" {
     gateway_id = aws_internet_gateway.igw.id
   }
   tags = var.custom_tags
-}*/
+}
 
-#resource "aws_route_table_association" "subnet" {
-#  for_each       = module.subnet.aws_subnets
-#  subnet_id      = each.value.id
-#  route_table_id = aws_route_table.rt.id
-#}
+/*resource "aws_route_table_association" "subnet" {
+  for_each       = module.subnet.aws_subnets
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.rt.id
+}*/
 
 module "aws_security_group_public" {
   source                     = "../modules/aws/security_group"
@@ -118,15 +118,6 @@ module "aws_security_group_public" {
   ]
 }
 
-/*module "aws_network_interface_public" {
-  source                        = "../modules/aws/network_interface"
-  aws_interface_create_eip      = true
-  aws_interface_private_ips     = ["10.64.18.10"]
-  aws_interface_security_groups = [module.aws_security_group_public.aws_security_group["id"]]
-  aws_interface_subnet_id       = module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"]
-  custom_tags                   = var.custom_tags
-}
-
 module "workload" {
   depends_on              = [module.site]
   source                  = "../modules/aws/ec2"
@@ -149,8 +140,11 @@ module "workload" {
   template_input_dir_path          = local.template_input_dir_path
   aws_ec2_network_interfaces       = [
     {
-      device_index         = 0
-      network_interface_id = module.aws_network_interface_public.aws_network_interface["id"]
+      create_eip      = true
+      private_ips     = ["10.64.18.10"]
+      security_groups = [module.aws_security_group_public.aws_security_group["id"]]
+      subnet_id       = module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"]
+      custom_tags     = var.custom_tags
     }
   ]
   aws_ec2_instance_custom_data_dirs = [
@@ -161,4 +155,4 @@ module "workload" {
     }
   ]
   custom_tags = var.custom_tags
-}*/
+}
