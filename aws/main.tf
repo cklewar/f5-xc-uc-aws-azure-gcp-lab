@@ -39,6 +39,55 @@ module "subnet" {
   ]
 }
 
+resource "aws_internet_gateway" "igw" {
+  vpc_id = module.vpc.aws_vpc["id"]
+  tags   = merge({ "Owner" : var.owner }, var.custom_tags)
+}
+
+resource "aws_route_table" "rt" {
+  vpc_id = module.vpc.aws_vpc["id"]
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+  tags = merge({ "Owner" : var.owner }, var.custom_tags)
+}
+
+/*resource "aws_route_table_association" "subnet" {
+  for_each       = module.subnet.aws_subnets
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.rt.id
+}*/
+
+module "aws_security_group_public" {
+  source                     = "../modules/aws/security_group"
+  aws_security_group_name    = format("%s-public-sg", var.site_name)
+  aws_vpc_id                 = module.vpc.aws_vpc["id"]
+  custom_tags                = merge({ "Owner" : var.owner }, var.custom_tags)
+  security_group_rule_egress = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = -1
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+  security_group_rule_ingress = [
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["192.168.0.0/16", "172.16.0.0/16", "10.0.0.0/8"]
+    }
+  ]
+}
+
 module "site" {
   source                   = "../modules/f5xc/site/aws/vpc"
   f5xc_api_token           = var.f5xc_api_token
@@ -69,66 +118,24 @@ module "site" {
   custom_tags                          = var.custom_tags
 }
 
-resource "aws_internet_gateway" "igw" {
-  vpc_id = module.vpc.aws_vpc["id"]
-  tags   = var.custom_tags
-}
-
-resource "aws_route_table" "rt" {
-  vpc_id = module.vpc.aws_vpc["id"]
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
-  }
-  tags = var.custom_tags
-}
-
-/*resource "aws_route_table_association" "subnet" {
-  for_each       = module.subnet.aws_subnets
-  subnet_id      = each.value.id
-  route_table_id = aws_route_table.rt.id
-}*/
-
-module "aws_security_group_public" {
-  source                     = "../modules/aws/security_group"
-  aws_security_group_name    = format("%s-public-sg", var.site_name)
-  aws_vpc_id                 = module.vpc.aws_vpc["id"]
-  custom_tags                = var.custom_tags
-  security_group_rule_egress = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = -1
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  ]
-  security_group_rule_ingress = [
-    {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["192.168.0.0/16", "172.16.0.0/16", "10.0.0.0/8"]
-    }
-  ]
-}
-
 module "workload" {
-  depends_on              = [module.site]
-  source                  = "../modules/aws/ec2"
-  aws_ec2_instance_name   = format("%s-ec2-workload", var.site_name)
-  aws_ec2_instance_type   = "t3.micro"
+  depends_on                        = [module.site]
+  source                            = "../modules/aws/ec2"
+  aws_ec2_instance_name             = format("%s-ec2-workload", var.site_name)
+  aws_ec2_instance_type             = "t3.micro"
+  aws_ec2_instance_custom_data_dirs = [
+    {
+      name        = "instance_script"
+      source      = "${local.template_output_dir_path}/${var.aws_ec2_instance_script_file_name}"
+      destination = format("/tmp/%s", var.aws_ec2_instance_script_file_name)
+    }
+  ]
   aws_ec2_instance_script = {
-    actions = [
+    template_data = var.instance_template_data
+    actions       = [
       format("chmod +x /tmp/%s", var.aws_ec2_instance_script_file_name),
       format("sudo /tmp/%s", var.aws_ec2_instance_script_file_name)
     ]
-    template_data = var.instance_template_data
   }
   aws_ec2_instance_script_template = var.aws_ec2_instance_script_template_file_name
   aws_ec2_instance_script_file     = var.aws_ec2_instance_script_file_name
@@ -141,18 +148,11 @@ module "workload" {
   aws_ec2_network_interfaces       = [
     {
       create_eip      = true
-      private_ips     = ["10.64.18.10"]
+      private_ips     = [workload_subnet_cidr_block"10.64.18.10"]
       security_groups = [module.aws_security_group_public.aws_security_group["id"]]
       subnet_id       = module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"]
-      custom_tags     = var.custom_tags
+      custom_tags     = merge({ "Owner" : var.owner }, var.custom_tags)
     }
   ]
-  aws_ec2_instance_custom_data_dirs = [
-    {
-      name        = "instance_script"
-      source      = "${local.template_output_dir_path}/${var.aws_ec2_instance_script_file_name}"
-      destination = format("/tmp/%s", var.aws_ec2_instance_script_file_name)
-    }
-  ]
-  custom_tags = var.custom_tags
+  custom_tags = merge({ "Owner" : var.owner }, var.custom_tags)
 }

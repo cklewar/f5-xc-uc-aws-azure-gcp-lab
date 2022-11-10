@@ -98,10 +98,6 @@ variable "owner_tag" {
   default = "owner unknown"
 }
 
-variable "tailscale_key" {
-  type = string
-}
-
 variable "grafana_agent_stack_id" {
   type    = string
   default = ""
