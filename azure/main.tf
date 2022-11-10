@@ -57,7 +57,7 @@ module "site" {
   f5xc_azure_default_ce_os_version    = true
   f5xc_azure_no_worker_nodes          = true
   f5xc_azure_total_worker_nodes       = 0
-  ssh_public_key                     = var.ssh_public_key_file
+  ssh_public_key                      = var.ssh_public_key_file
   custom_tags                         = var.custom_tags
 }
 
@@ -108,15 +108,24 @@ resource "azurerm_subnet_route_table_association" "vip" {
 module "workload" {
   source                                     = "../modules/azure/linux_virtual_machine"
   azure_zone                                 = var.azure_az
+  custom_tags                                = var.custom_tags
   azure_zones                                = [var.azure_az]
-  azure_region                               = module.resource_group.resource_group["location"]
-  azure_vnet_subnet_id                       = module.inside_subnet.subnet["id"]
+  azure_region                               = var.azure_region
+  ssh_public_key                             = var.ssh_public_key_file
   azure_resource_group_name                  = module.resource_group.resource_group["name"]
-  azure_virtual_machine_size                 = "Standard_DS1_v2"
   azure_virtual_machine_name                 = format("%s-workload-vm", var.site_name)
-  azure_network_interface_name               = format("%s-iface", var.site_name)
+  azure_virtual_machine_size                 = "Standard_DS1_v2"
   azure_linux_virtual_machine_custom_data    = templatefile(format("%s/%s", local.template_input_dir_path, var.azure_instance_script_template_file_name), var.instance_template_data)
   azure_linux_virtual_machine_admin_username = "ubuntu"
-  ssh_public_key                            = var.ssh_public_key_file
-  custom_tags                                = var.custom_tags
+  azure_network_interfaces                   = [
+    {
+      name             = format("%s-iface", var.site_name)
+      tags             = var.custom_tags
+      ip_configuration = {
+        subnet_id                     = module.inside_subnet.subnet["id"]
+        create_public_ip_address      = true
+        private_ip_address_allocation = "Dynamic"
+      }
+    }
+  ]
 }

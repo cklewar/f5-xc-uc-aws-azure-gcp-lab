@@ -3,7 +3,8 @@ variable "site_name" {
 }
 
 variable "instance_template_data" {
-  type = map(string)
+  type    = map(string)
+  default = {}
 }
 
 variable "f5xc_azure_cred" {
@@ -39,7 +40,7 @@ variable "inside_subnet_cidr_block" {
 }
 
 variable "ssh_public_key_file" {
-  type    = string
+  type = string
 }
 
 variable "allow_cidr_blocks" {
