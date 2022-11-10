@@ -5,10 +5,10 @@ output "site" {
   }
 }
 
-/*output "workload" {
+output "workload" {
   value = {
     private_ip = module.workload.aws_ec2_instance["private_ip"]
     public_ip  = module.workload.aws_ec2_instance["public_ip"]
     public_dns = module.workload.aws_ec2_instance["public_dns"]
   }
-}*/
+}
