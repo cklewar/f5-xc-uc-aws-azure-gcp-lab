@@ -38,7 +38,7 @@ module "workload" {
   gcp_compute_instance_labels = {
     webserver = "true"
   }
-  ssh_public_key= var.ssh_public_key_file
+  ssh_public_key = var.ssh_public_key_file
 }
 
 module "gcp_compute_firewall_internal" {
@@ -115,7 +115,7 @@ module "site" {
   f5xc_gcp_default_ce_os_version        = true
   f5xc_gcp_default_blocked_services     = true
   f5xc_gcp_existing_inside_network_name = module.gcp_network.vpc_network["name"]
-  ssh_public_key                       = var.ssh_public_key_file
+  ssh_public_key                        = var.ssh_public_key_file
 }
 
 /*resource "google_compute_route" "vip" {
