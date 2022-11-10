@@ -39,10 +39,6 @@ variable "workload_subnet_cidr_block" {
   type = string
 }
 
-variable "workload_subnet_host_ip" {
-  type = string
-}
-
 variable "ssh_public_key_file" {
   type = string
 }

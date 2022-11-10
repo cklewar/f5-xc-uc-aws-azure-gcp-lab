@@ -53,12 +53,6 @@ resource "aws_route_table" "rt" {
   tags = merge({ "Owner" : var.owner }, var.custom_tags)
 }
 
-/*resource "aws_route_table_association" "subnet" {
-  for_each       = module.subnet.aws_subnets
-  subnet_id      = each.value.id
-  route_table_id = aws_route_table.rt.id
-}*/
-
 module "aws_security_group_public" {
   source                     = "../modules/aws/security_group"
   aws_security_group_name    = format("%s-public-sg", var.site_name)
@@ -148,7 +142,7 @@ module "workload" {
   aws_ec2_network_interfaces       = [
     {
       create_eip      = true
-      private_ips     = [workload_subnet_cidr_block"10.64.18.10"]
+      private_ips     = ["10.64.18.10"]
       security_groups = [module.aws_security_group_public.aws_security_group["id"]]
       subnet_id       = module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"]
       custom_tags     = merge({ "Owner" : var.owner }, var.custom_tags)
