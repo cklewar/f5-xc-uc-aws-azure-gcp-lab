@@ -10,7 +10,7 @@ module "healthcheck" {
   f5xc_healthcheck_unhealthy_threshold = 2
 }
 
-module "origin_pool" {
+/*module "origin_pool" {
   source                                     = "../modules/f5xc/origin-pool"
   f5xc_tenant                                = var.f5xc_tenant
   f5xc_namespace                             = var.f5xc_namespace
@@ -28,6 +28,47 @@ module "origin_pool" {
     base_ejection_time          = 10000
     max_ejection_percent        = 100
     consecutive_gateway_failure = 2
+  }
+}*/
+
+resource "volterra_origin_pool" "op" {
+  name                   = format("%s-op", var.app_site_name)
+  namespace              = var.f5xc_namespace
+  endpoint_selection     = "DISTRIBUTED"
+  loadbalancer_algorithm = "LB_OVERRIDE"
+  port                   = var.origin_port
+  no_tls                 = true
+
+  dynamic "origin_servers" {
+    for_each = var.f5xc_origin_pool_origin_servers.private_ip
+    content {
+      private_ip {
+        ip             = origin_servers.value.ip
+        inside_network = origin_servers.value.inside_network
+        site_locator {
+          site {
+            namespace = origin_servers.value.site_locator.site.namespace
+            name      = origin_servers.value.site_locator.site.name
+            tenant    = origin_servers.value.site_locator.site.tenant
+          }
+        }
+      }
+    }
+  }
+
+  advanced_options {
+    disable_outlier_detection = false
+    outlier_detection {
+      base_ejection_time          = 10000
+      consecutive_5xx             = 2
+      consecutive_gateway_failure = 2
+      interval                    = 5000
+      max_ejection_percent        = 100
+    }
+  }
+
+  healthcheck {
+    name = module.healthcheck.healthcheck["name"]
   }
 }
 
@@ -59,7 +100,7 @@ resource "volterra_http_loadbalancer" "lb" {
 
   default_route_pools {
     pool {
-      name = module.origin_pool.origin-pool["name"]
+      name = volterra_origin_pool.op.name
     }
     weight   = 1
     priority = 1
