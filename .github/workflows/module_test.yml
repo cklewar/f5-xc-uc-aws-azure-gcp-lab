@@ -208,7 +208,7 @@ jobs:
           TF_VAR_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           TF_VAR_gcp_application_credentials: ${{ secrets.GCP_APPLICATION_CREDENTIALS }}
           TF_VAR_tailscale_key: ${{ secrets.TAILSCALE_KEY }}
-        run: echo "123" # terraform apply -auto-approve -no-color
+        run: terraform apply -auto-approve -no-color
         continue-on-error: false
       - name: Cleanup environment
         id: cleanup_env
