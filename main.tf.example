@@ -1,6 +1,6 @@
 module "namespace" {
   source              = "./modules/f5xc/namespace"
-  f5xc_namespace_name = var.custom_namespace
+  f5xc_namespace_name = format("%s-%s-%s", var.project_prefix, var.custom_namespace, var.project_suffix)
   providers           = {
     volterra = volterra.default
   }
