@@ -64,9 +64,7 @@ module "site" {
   f5xc_aws_vpc_az_nodes    = {
     node0 : {
       f5xc_aws_vpc_outside_existing_subnet_id  = contains(keys(module.subnet.aws_subnets), format("%s-sn-outside", var.site_name)) ? module.subnet.aws_subnets[format("%s-sn-outside", var.site_name)]["id"] : ""
-      # module.subnet.aws_subnets[format("%s-sn-inside", var.site_name)]["id"],
       f5xc_aws_vpc_inside_existing_subnet_id   = contains(keys(module.subnet.aws_subnets), format("%s-sn-inside", var.site_name)) ? module.subnet.aws_subnets[format("%s-sn-inside", var.site_name)]["id"] : ""
-      # module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"],
       f5xc_aws_vpc_workload_existing_subnet_id = contains(keys(module.subnet.aws_subnets), format("%s-sn-workload", var.site_name)) ? module.subnet.aws_subnets[format("%s-sn-workload", var.site_name)]["id"] : ""
       f5xc_aws_vpc_az_name                     = var.aws_az_name
     }
