@@ -72,7 +72,7 @@ resource "volterra_origin_pool" "op" {
   }
 }
 
-/*resource "volterra_http_loadbalancer" "lb" {
+resource "volterra_http_loadbalancer" "lb" {
   name                            = format("%s-lb", var.app_site_name)
   domains                         = var.domains
   namespace                       = var.f5xc_namespace
@@ -109,4 +109,4 @@ resource "volterra_origin_pool" "op" {
   http {
     dns_volterra_managed = false
   }
-}*/
+}
