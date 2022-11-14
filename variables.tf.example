@@ -21,7 +21,7 @@ variable "custom_namespace" {
 }
 
 variable "f5xc_tenant" {
-  type = string
+  type    = string
 }
 
 variable "f5xc_namespace" {
@@ -34,11 +34,11 @@ variable "f5xc_api_cert" {
 }
 
 variable "f5xc_api_url" {
-  type = string
+  type    = string
 }
 
 variable "f5xc_api_token" {
-  type = string
+  type    = string
 }
 
 variable "f5xc_api_ca_cert" {
@@ -46,7 +46,7 @@ variable "f5xc_api_ca_cert" {
 }
 
 variable "f5xc_api_p12_file" {
-  type = string
+  type    = string
 }
 
 variable "f5xc_api_key" {
@@ -69,48 +69,25 @@ variable "f5xc_gcp_cred" {
   default = "ck-gcp-01"
 }
 
-variable "gcp_project_id" {
-  type = string
-}
-
 variable "azure_subscription_id" {
   type    = string
-  default = ""
 }
 
 variable "azure_client_id" {
   type    = string
-  default = ""
 }
 
 variable "azure_client_secret" {
   type    = string
-  default = ""
 }
 
 variable "azure_tenant_id" {
   type    = string
-  default = ""
 }
 
-variable "owner_tag" {
+variable "owner" {
   type    = string
-  default = "owner unknown"
-}
-
-variable "grafana_agent_stack_id" {
-  type    = string
-  default = ""
-}
-
-variable "grafana_api_key" {
-  type    = string
-  default = ""
-}
-
-variable "grafana_api_url" {
-  type    = string
-  default = ""
+  default = "c.klewar@f5.com"
 }
 
 variable "build_aws" {
@@ -129,13 +106,22 @@ variable "build_gcp" {
 }
 
 variable "ssh_public_key_file" {
-  type = string
+  type    = string
 }
 
 variable "ssh_private_key_file" {
-  type = string
+  type    = string
 }
 
 variable "gcp_application_credentials" {
-  type = string
+  type    = string
+}
+
+variable "gcp_project_id" {
+  type    = string
+}
+
+variable "f5xc_feature" {
+  type    = string
+  default = "azure-gcp-aws-lab"
 }
