@@ -138,6 +138,7 @@ module "aws_security_group_mgmt" {
 }
 
 module "workload" {
+  depends_on                        = [module.site]
   source                            = "../modules/aws/ec2"
   aws_ec2_instance_name             = format("%s-ec2-workload", var.site_name)
   aws_ec2_instance_type             = "t3.micro"
