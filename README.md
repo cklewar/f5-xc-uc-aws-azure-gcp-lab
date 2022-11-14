@@ -136,16 +136,10 @@ gcp-site-3b = {
 ````hcl
 ````
 
-Access to workload instances via tailscale:
+Access to workload instances via ssh:
 
 ```bash
-$ tailscale status|grep lab
-100.66.170.187  lab-aws-2a-workload user@      linux   -
-100.119.43.182  lab-aws-2b-workload user@      linux   -
-100.80.104.134  lab-azure-1a-workload user@    linux   -
-100.94.28.162   lab-azure-1b-workload user@    linux   -
-100.125.121.151 lab-gcp-3a-workload user@      linux   -
-100.78.134.207  lab-gcp-3b-workload user@      linux   -
+$ ssh -i <ssh_private_key> <username>@<public_ip>
 ```
 
 ```bash
