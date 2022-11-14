@@ -118,13 +118,11 @@ module "site" {
   ssh_public_key                        = var.ssh_public_key_file
 }
 
-/*resource "google_compute_route" "vip" {
-  depends_on             = [module.site]
+resource "google_compute_route" "vip" {
   name                   = format("%s-compute-route-vip", var.site_name)
   dest_range             = var.allow_cidr_blocks[0]
   network                = module.gcp_network.vpc_network["name"]
-  # next_hop_instance      = regex(local.pattern, module.site.gcp_vpc["params"])
-  next_hop_instance      = ""
+  next_hop_instance      = module.site.gcp_vpc["instance_name"]
   next_hop_instance_zone = var.gcp_az_name
   priority               = 100
-}*/
+}

@@ -18,6 +18,10 @@ output "gcp-site-1a" {
   value = module.gcp-site-1a
 }
 
-/*output "gcp-site-1b" {
+output "gcp-site-1b" {
   value = module.gcp-site-1b
-}*/
+}
+
+output "gcp_worklaod_ip" {
+  value = one(module.gcp-site-1a[*].workload.private_ip)
+}
