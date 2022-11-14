@@ -4,7 +4,7 @@ output "site" {
 
 output "workload" {
   value = {
-    "public_ip"  = module.workload.gcp_compute["nat_ip"]
-    "private_ip" = module.workload.gcp_compute["network_ip"]
+    "public_ip"  = module.workload.gcp_compute["public_ip"]
+    "private_ip" = module.workload.gcp_compute["private_ip"]
   }
 }
