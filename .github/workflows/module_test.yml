@@ -10,7 +10,7 @@ jobs:
       - name: Check out repository and submodules
         uses: actions/checkout@v3
         with:
-          ref: 0.11.14
+          ref: 0.11.16
           fetch-depth: 0
           submodules: recursive
       - name: Checkout support repo
@@ -279,7 +279,7 @@ jobs:
           TF_VAR_gcp_project_id: ${{ secrets.GCP_PROJECT_ID }}
           TF_VAR_gcp_application_credentials: ${{ secrets.GCP_APPLICATION_CREDENTIALS }}
           TF_VAR_tailscale_key: ${{ secrets.TAILSCALE_KEY }}
-        run: echo "123" # terraform destroy -auto-approve -no-color
+        run: terraform destroy -auto-approve -no-color
         continue-on-error: false
       - name: Cleanup environment
         id: cleanup_env
